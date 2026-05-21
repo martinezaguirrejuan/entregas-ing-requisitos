@@ -160,7 +160,7 @@
           <td><strong>1</strong></td>
           <td><strong>Requisitos del Sistema</strong></td>
           <td>9 mayo 2026</td>
-          <td>10 HU · 14 RF · 9 RNF · 10 RN · Matriz de Trazabilidad</td>
+          <td>20 HU · 24 RF · 9 RNF · 14 RN · Matriz de Trazabilidad</td>
           <td><span class="badge-done">✅ Entregado</span></td>
         </tr>
         <tr>
@@ -190,10 +190,10 @@
         <a href="#desc">1. Descripción del Proyecto</a>
         <a href="#proceso">2. Proceso de Ingeniería de Requisitos</a>
         <a href="#glosario">3. Glosario de Tipos de Requisito</a>
-        <a href="#hu">4. Historias de Usuario (10)</a>
-        <a href="#rf">5. Requisitos Funcionales (14)</a>
+        <a href="#hu">4. Historias de Usuario (20)</a>
+        <a href="#rf">5. Requisitos Funcionales (24)</a>
         <a href="#rnf">6. Requisitos No Funcionales (9)</a>
-        <a href="#rn">7. Reglas de Negocio (10)</a>
+        <a href="#rn">7. Reglas de Negocio (14)</a>
         <a href="#matriz">8. Matriz de Trazabilidad</a>
         <a href="#conclusiones">9. Conclusiones</a>
       </div>
@@ -239,7 +239,7 @@
   <!-- 2. PROCESO -->
   <h2 id="proceso">2. Proceso de Ingeniería de Requisitos Aplicado</h2>
   <div class="steps">
-    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Identificación de actores</strong><p>Se definieron los roles que interactúan con el sistema: Freelancer / emprendedor, PYME, Cliente final y Usuario registrado.</p></div></div>
+    <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Identificación de actores</strong><p>Se definieron los roles que interactúan con el sistema: Freelancer / emprendedor, PYME, Cliente final, Usuario registrado y Administrador de plataforma.</p></div></div>
     <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Elicitación — recolección de necesidades</strong><p>Mediante observación del problema se redactaron las Historias de Usuario desde la perspectiva de cada rol.</p><code>Como [rol], quiero [acción], para [beneficio].</code></div></div>
     <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Análisis y derivación de Requisitos Funcionales</strong><p>Cada HU se descompuso en capacidades concretas que el sistema debe ofrecer.</p><code>RF-NNN: El sistema debe [verbo] [objeto].</code></div></div>
     <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Definición de atributos de calidad</strong><p>Se identificaron los atributos no funcionales (rendimiento, disponibilidad, usabilidad, seguridad) con métricas verificables.</p><code>RNF-NNN: El sistema debe [atributo medible].</code></div></div>
@@ -275,6 +275,16 @@
       <tr><td><span class="chip chip-hu">HU-08</span></td><td>Usuario</td><td>ver un dashboard con mis estadísticas</td><td>conocer cuántos contratos tengo, su estado y su riesgo promedio</td></tr>
       <tr><td><span class="chip chip-hu">HU-09</span></td><td>Usuario</td><td>modificar un contrato existente con una instrucción en lenguaje natural</td><td>ajustarlo sin reescribirlo desde cero</td></tr>
       <tr><td><span class="chip chip-hu">HU-10</span></td><td>Usuario</td><td>descargar un contrato en PDF</td><td>imprimirlo o enviarlo por correo formal</td></tr>
+      <tr><td><span class="chip chip-hu">HU-11</span></td><td>Usuario registrado</td><td>clasificar un contrato como interno (entre empleados/áreas) o externo (con clientes/proveedores)</td><td>organizar mis contratos según su naturaleza y aplicar la plantilla adecuada a cada caso</td></tr>
+      <tr><td><span class="chip chip-hu">HU-12</span></td><td>Usuario</td><td>generar un contrato completo describiendo en lenguaje natural lo que necesito, sin partir de una plantilla</td><td>crear acuerdos personalizados cuando ninguna plantilla predefinida se ajusta a mi situación</td></tr>
+      <tr><td><span class="chip chip-hu">HU-13</span></td><td>Usuario</td><td>consultar el historial de versiones de un contrato editado y restaurar una versión anterior</td><td>comparar cambios realizados por IA y recuperar el contenido previo si el resultado no es el esperado</td></tr>
+      <tr><td><span class="chip chip-hu">HU-14</span></td><td>Usuario</td><td>recibir notificaciones cuando la contraparte firme un contrato, cuando esté próximo a vencer o cuando el análisis detecte riesgo alto</td><td>estar informado del estado de mis contratos sin necesidad de revisarlos manualmente</td></tr>
+      <tr><td><span class="chip chip-hu">HU-15</span></td><td>Usuario</td><td>registrar la fecha de inicio y vencimiento de un contrato</td><td>gestionar la vigencia de mis acuerdos y actuar antes de que expiren</td></tr>
+      <tr><td><span class="chip chip-hu">HU-16</span></td><td>Usuario registrado</td><td>recuperar mi contraseña mediante un enlace enviado a mi correo y activar autenticación de dos factores</td><td>acceder a mi cuenta si olvido mi clave y reforzar la seguridad de mis contratos</td></tr>
+      <tr><td><span class="chip chip-hu">HU-17</span></td><td>Usuario</td><td>que el sistema genere una constancia de firma con sello de tiempo, dirección IP y hash del documento</td><td>dar validez probatoria a la firma digital ante terceros o instancias legales</td></tr>
+      <tr><td><span class="chip chip-hu">HU-18</span></td><td>Usuario registrado</td><td>buscar y filtrar mis contratos por nombre, fecha, tipo o estado</td><td>encontrar rápidamente un contrato específico dentro de mi repositorio personal</td></tr>
+      <tr><td><span class="chip chip-hu">HU-19</span></td><td>Administrador de plataforma</td><td>gestionar los roles de los usuarios (Freelancer, PYME, Administrador) con permisos diferenciados</td><td>controlar el acceso a funciones según el tipo de usuario y proteger la integridad de la plataforma</td></tr>
+      <tr><td><span class="chip chip-hu">HU-20</span></td><td>Administrador de plataforma</td><td>gestionar el catálogo de plantillas del sistema, organizarlas por categorías y actualizarlas</td><td>mantener las plantillas disponibles para todos los usuarios correctamente clasificadas y vigentes</td></tr>
     </tbody>
   </table>
 
@@ -299,6 +309,16 @@
       <tr><td><span class="chip chip-rf">RF-012</span></td><td>Mostrar un dashboard con el total de contratos, riesgo promedio y los últimos contratos creados.</td></tr>
       <tr><td><span class="chip chip-rf">RF-013</span></td><td>Permitir modificar un contrato existente enviando una instrucción en lenguaje natural a la IA.</td></tr>
       <tr><td><span class="chip chip-rf">RF-014</span></td><td>Permitir consultar al asistente IA preguntas sobre un contrato cargado.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-015</span></td><td>Permitir al usuario clasificar un contrato como interno o externo al momento de crearlo o editarlo.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-016</span></td><td>Permitir generar un contrato completo a partir de una descripción libre en lenguaje natural, sin usar plantilla predefinida.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-017</span></td><td>Guardar automáticamente una nueva versión del contrato cada vez que sea editado y permitir al usuario consultar y restaurar versiones anteriores.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-018</span></td><td>Enviar notificaciones al usuario (en plataforma y por correo) cuando la contraparte firme, cuando el contrato esté a 7 días o menos de vencer, y cuando el análisis detecte riesgo alto.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-019</span></td><td>Permitir registrar fechas de inicio y vencimiento para cada contrato y generar alertas automáticas antes de su expiración.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-020</span></td><td>Permitir recuperar la contraseña mediante un enlace temporal enviado al correo registrado y ofrecer activación de autenticación de dos factores (2FA).</td></tr>
+      <tr><td><span class="chip chip-rf">RF-021</span></td><td>Generar una constancia de firma que incluya sello de tiempo UTC, dirección IP del firmante y hash SHA-256 del documento en el momento de cada firma.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-022</span></td><td>Permitir buscar y filtrar contratos del repositorio personal por nombre, fecha de creación, tipo de contrato y estado.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-023</span></td><td>Distinguir tres roles de usuario (Freelancer, PYME, Administrador de plataforma) con permisos y vistas diferenciadas según el rol asignado.</td></tr>
+      <tr><td><span class="chip chip-rf">RF-024</span></td><td>Permitir al Administrador de plataforma crear, editar, eliminar y categorizar las plantillas disponibles para todos los usuarios del sistema.</td></tr>
     </tbody>
   </table>
 
@@ -338,6 +358,10 @@
       <tr><td><span class="chip chip-rn">RN-008</span></td><td>el contenido del contrato a analizar supera los <strong>50.000 caracteres</strong></td><td>el sistema debe rechazar el análisis e informar el límite</td></tr>
       <tr><td><span class="chip chip-rn">RN-009</span></td><td>la API de IA no está disponible</td><td>el sistema debe usar las plantillas locales como respaldo y notificar al usuario</td></tr>
       <tr><td><span class="chip chip-rn">RN-010</span></td><td>un usuario desea recuperar su contraseña</td><td>debe solicitarlo por correo y recibir un enlace temporal único</td></tr>
+      <tr><td><span class="chip chip-rn">RN-011</span></td><td>el contrato es clasificado como <strong>interno</strong></td><td>solo podrá ser compartido y firmado por usuarios que pertenezcan a la misma organización (mismo dominio de correo)</td></tr>
+      <tr><td><span class="chip chip-rn">RN-012</span></td><td>la fecha de vencimiento de un contrato es menor o igual a <strong>7 días</strong></td><td>el sistema debe enviar automáticamente una notificación de alerta al usuario propietario</td></tr>
+      <tr><td><span class="chip chip-rn">RN-013</span></td><td>un contrato es firmado digitalmente</td><td>el sistema debe registrar de forma inmutable el sello de tiempo UTC, la dirección IP del firmante y el hash SHA-256 del documento</td></tr>
+      <tr><td><span class="chip chip-rn">RN-014</span></td><td>el usuario tiene rol de <strong>Administrador de plataforma</strong></td><td>puede gestionar plantillas del sistema, acceder a estadísticas globales y administrar roles de otros usuarios; ningún otro rol puede realizar estas acciones</td></tr>
     </tbody>
   </table>
 
@@ -359,6 +383,16 @@
       <tr><td><span class="chip chip-hu">HU-08</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-012</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-003</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span></div></td></tr>
       <tr><td><span class="chip chip-hu">HU-09</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-013</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-009</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span><span class="chip chip-rn">RN-009</span></div></td></tr>
       <tr><td><span class="chip chip-hu">HU-10</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-011</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-005</span></div></td><td><div class="chips-cell">—</div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-11</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-015</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-006</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span><span class="chip chip-rn">RN-011</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-12</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-016</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-008</span><span class="chip chip-rnf">RNF-009</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span><span class="chip chip-rn">RN-009</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-13</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-017</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-007</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span><span class="chip chip-rn">RN-003</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-14</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-018</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-002</span><span class="chip chip-rnf">RNF-006</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-002</span><span class="chip chip-rn">RN-012</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-15</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-019</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-002</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-012</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-16</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-020</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-004</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-010</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-17</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-021</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-004</span><span class="chip chip-rnf">RNF-002</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-013</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-18</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-022</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-003</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-19</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-023</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-004</span><span class="chip chip-rnf">RNF-006</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-001</span><span class="chip chip-rn">RN-014</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-20</span></td><td><div class="chips-cell"><span class="chip chip-rf">RF-024</span></div></td><td><div class="chips-cell"><span class="chip chip-rnf">RNF-001</span><span class="chip chip-rnf">RNF-006</span><span class="chip chip-rnf">RNF-008</span></div></td><td><div class="chips-cell"><span class="chip chip-rn">RN-009</span><span class="chip chip-rn">RN-014</span></div></td></tr>
     </tbody>
   </table>
 
@@ -371,6 +405,7 @@
     <div class="conclusion-item"><div class="conclusion-num">2</div><p><strong>Restricciones técnicas identificadas:</strong> Desde el inicio se documentó el almacenamiento local en <code>localStorage</code> (RNF-007) y el uso de IA externa con fallback local (RN-009).</p></div>
     <div class="conclusion-item"><div class="conclusion-num">3</div><p><strong>Métricas verificables:</strong> Los RNF incluyen valores concretos (tiempos de respuesta, tamaños mínimos, compatibilidad) que permiten probar el sistema objetivamente.</p></div>
     <div class="conclusion-item"><div class="conclusion-num">4</div><p><strong>Anticipación de reglas críticas:</strong> El límite de 50.000 caracteres (RN-008) y el bloqueo de funcionalidades sin sesión (RN-001) se identificaron antes de implementar, evitando rediseños posteriores.</p></div>
+    <div class="conclusion-item"><div class="conclusion-num">5</div><p><strong>Cobertura de roles y seguridad:</strong> La incorporación de roles diferenciados (HU-19), validación legal de firma (HU-17) y autenticación 2FA (HU-16) garantiza que el sistema cumpla con estándares mínimos de valor probatorio y control de acceso.</p></div>
   </div>
 
   <!-- ═══════════════════════════════════ ENTREGA 2 ═══════════════════════════════════ -->
@@ -390,6 +425,7 @@
     <tbody>
       <tr><td><strong>Empleado</strong></td><td>Persona de NexaServicios S.A.S. que necesita crear, revisar o gestionar contratos. Tiene acceso a todas las funcionalidades del sistema una vez autenticado.</td></tr>
       <tr><td><strong>Coordinador</strong></td><td>Persona con responsabilidad de supervisión sobre los contratos. Comparte las mismas funcionalidades que el Empleado.</td></tr>
+      <tr><td><strong>Administrador de plataforma</strong></td><td>Usuario con permisos elevados que gestiona plantillas del sistema, roles de usuario y estadísticas globales de la plataforma.</td></tr>
     </tbody>
   </table>
 
@@ -566,6 +602,16 @@
       <tr><td><span class="chip chip-hu">HU-08</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-05</span></div></td></tr>
       <tr><td><span class="chip chip-hu">HU-09</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span><span class="chip chip-cu">CU-04</span></div></td></tr>
       <tr><td><span class="chip chip-hu">HU-10</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span><span class="chip chip-cu">CU-05</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-11</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-12</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-13</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span><span class="chip chip-cu">CU-05</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-14</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span><span class="chip chip-cu">CU-05</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-15</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-16</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-01</span><span class="chip chip-cu">CU-02</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-17</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-18</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-05</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-19</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-01</span><span class="chip chip-cu">CU-02</span></div></td></tr>
+      <tr><td><span class="chip chip-hu">HU-20</span></td><td><div class="chips-cell"><span class="chip chip-cu">CU-03</span></div></td></tr>
     </tbody>
   </table>
 
