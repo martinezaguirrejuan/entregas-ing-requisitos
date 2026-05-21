@@ -1,0 +1,24 @@
+# Matriz de Trazabilidad
+
+| HU | RF asociados | RNF aplicables | RN aplicables |
+|----|-------------|----------------|---------------|
+| HU-01 | RF-003, RF-004 | RNF-001, RNF-008, RNF-009 | RN-001, RN-009 |
+| HU-02 | RF-005, RF-006 | RNF-001, RNF-006 | RN-002, RN-007, RN-008 |
+| HU-03 | RF-007 | RNF-004, RNF-007 | RN-001, RN-003 |
+| HU-04 | RF-001, RF-002 | RNF-004 | RN-006, RN-010 |
+| HU-05 | RF-008 | RNF-001, RNF-003 | RN-003 |
+| HU-06 | RF-009 | RNF-007 | RN-004 |
+| HU-07 | RF-010 | RNF-002, RNF-005 | RN-005 |
+| HU-08 | RF-012 | RNF-001, RNF-003 | RN-001 |
+| HU-09 | RF-013 | RNF-001, RNF-009 | RN-001, RN-009 |
+| HU-10 | RF-011 | RNF-005 | — |
+| HU-11 | RF-015 | RNF-001, RNF-006 | RN-001, RN-011 |
+| HU-12 | RF-016 | RNF-001, RNF-008, RNF-009 | RN-001, RN-009 |
+| HU-13 | RF-017 | RNF-001, RNF-007 | RN-001, RN-003 |
+| HU-14 | RF-018 | RNF-002, RNF-006 | RN-002, RN-012 |
+| HU-15 | RF-019 | RNF-001, RNF-002 | RN-012 |
+| HU-16 | RF-020 | RNF-004 | RN-010 |
+| HU-17 | RF-021 | RNF-004, RNF-002 | RN-013 |
+| HU-18 | RF-022 | RNF-001, RNF-003 | RN-001 |
+| HU-19 | RF-023 | RNF-004, RNF-006 | RN-001, RN-014 |
+| HU-20 | RF-024 | RNF-001, RNF-006, RNF-008 | RN-009, RN-014 |
