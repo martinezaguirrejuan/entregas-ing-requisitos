@@ -63,14 +63,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario ya tiene cuenta: el sistema muestra un mensaje "Este correo ya está registrado" y ofrece el enlace para iniciar sesión o recuperar contraseña. |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si la contraseña no cumple los requisitos mínimos (menos de 8 caracteres, sin mayúscula o sin número): el sistema muestra un mensaje explicativo sin borrar los demás campos. |
 | FE-02 | Si hay un error de conexión al guardar: el sistema muestra un mensaje de error y conserva los datos ingresados para que el usuario no tenga que escribirlos de nuevo. |
 
@@ -80,6 +80,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Ocasional (solo al crear la cuenta) |
 | **RN Relacionadas** | RN-006 |
 | **RNF Relacionados** | RNF-004, RNF-006 |
+| **Notas / Observaciones** | El rol por defecto al registrarse es Freelancer. Si el usuario necesita rol PYME o Administrador, debe solicitarlo al administrador de la plataforma. |
 
 ---
 
@@ -106,15 +107,15 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario tiene 2FA activado: después de ingresar la contraseña correcta, el sistema solicita el código de verificación. El usuario lo ingresa y el sistema completa el acceso. |
 | FA-02 | Si el usuario no recuerda su contraseña: hace clic en "¿Olvidaste tu contraseña?" e inicia el flujo de recuperación por correo. |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si las credenciales son incorrectas: el sistema muestra "Correo o contraseña incorrectos" sin indicar cuál de los dos está mal (por seguridad). Permite reintentar. |
 | FE-02 | Si hay 5 intentos fallidos consecutivos: el sistema bloquea temporalmente el acceso por 15 minutos y notifica al usuario. |
 
@@ -124,6 +125,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Diaria |
 | **RN Relacionadas** | RN-001, RN-010 |
 | **RNF Relacionados** | RNF-004, RNF-006 |
+| **Notas / Observaciones** | El sistema no debe indicar cuál campo (correo o contraseña) es incorrecto para evitar que alguien intente adivinar datos de otros usuarios. |
 
 ---
 
@@ -153,14 +155,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario quiere modificar algo del contrato generado: puede editarlo usando instrucciones en lenguaje natural (CU-08). |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si la IA no está disponible: el sistema genera el contrato usando la plantilla base predefinida y avisa al usuario que la personalización avanzada no está disponible en este momento (RN-009). |
 | FE-02 | Si el usuario no completa todos los campos obligatorios del formulario: el sistema resalta en rojo los campos vacíos y no avanza al siguiente paso. |
 
@@ -170,6 +172,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Diaria |
 | **RN Relacionadas** | RN-001, RN-004, RN-008, RN-009 |
 | **RNF Relacionados** | RNF-001, RNF-006, RNF-008, RNF-009 |
+| **Notas / Observaciones** | La clasificación interno/externo del contrato debe hacerse en este paso, ya que determina qué reglas de compartir y firma aplican (RN-011). |
 
 ---
 
@@ -198,14 +201,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el puntaje de riesgo supera 70: el sistema muestra una advertencia prominente antes de permitir guardar o firmar (RN-002). |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si el contrato supera los 50.000 caracteres: el sistema rechaza el análisis e informa al usuario del límite (RN-008). |
 | FE-02 | Si la IA no está disponible: el sistema informa que el análisis no está disponible en este momento y ofrece reintentar más tarde. |
 
@@ -215,6 +218,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Frecuente |
 | **RN Relacionadas** | RN-001, RN-002, RN-007, RN-008 |
 | **RNF Relacionados** | RNF-001, RNF-006, RNF-009 |
+| **Notas / Observaciones** | El análisis es una recomendación de la IA, no una decisión legal definitiva. El usuario siempre puede optar por firmar aunque el riesgo sea alto, pero debe hacerlo con confirmación explícita. |
 
 ---
 
@@ -242,15 +246,15 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario quiere restaurar una versión anterior: accede al historial, selecciona la versión deseada y confirma la restauración. El sistema crea una nueva versión con el contenido anterior. |
 | FA-02 | Si el usuario quiere ver el dashboard general: el sistema muestra el total de contratos, distribución por estado y riesgo promedio. |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si el usuario intenta eliminar un contrato firmado: el sistema solicita confirmación explícita antes de proceder (RN-003). |
 | FE-02 | Si no hay contratos que coincidan con el filtro aplicado: el sistema muestra "No se encontraron contratos con estos criterios" y sugiere ampliar la búsqueda. |
 
@@ -260,6 +264,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Diaria |
 | **RN Relacionadas** | RN-001, RN-003 |
 | **RNF Relacionados** | RNF-001, RNF-003, RNF-007 |
+| **Notas / Observaciones** | Este CU agrupa múltiples acciones sobre contratos. En una implementación real podría dividirse en casos de uso más pequeños por cada acción (ver, editar, eliminar, etc.). |
 
 ---
 
@@ -288,14 +293,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario prefiere usar una firma guardada: selecciona una de la biblioteca, la previsualiza sobre el contrato y confirma. |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si el contrato tiene un puntaje de riesgo mayor a 70: el sistema muestra una advertencia y solicita que el usuario confirme explícitamente que acepta los riesgos antes de firmar (RN-002). |
 | FE-02 | Si el área de firma queda vacía: el sistema no permite continuar y muestra "Debes dibujar tu firma para continuar". |
 
@@ -305,6 +310,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Frecuente |
 | **RN Relacionadas** | RN-003, RN-013 |
 | **RNF Relacionados** | RNF-001, RNF-003, RNF-004 |
+| **Notas / Observaciones** | La constancia de firma (sello UTC, IP, hash SHA-256) se genera de forma inmutable e irrefutable. Una vez creada no puede modificarse, garantizando su valor probatorio legal. |
 
 ---
 
@@ -334,14 +340,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el contrato es interno: el sistema verifica que la contraparte tenga el mismo dominio de correo organizacional antes de permitir el firmado (RN-011). |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si el enlace expira: la contraparte ve un mensaje "Este enlace ya no está activo" con instrucciones para pedir uno nuevo al propietario. |
 | FE-02 | Si el servicio de correo falla: el sistema notifica al propietario que el correo no pudo enviarse y le muestra el enlace para que lo comparta manualmente. |
 
@@ -351,6 +357,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Frecuente |
 | **RN Relacionadas** | RN-005, RN-011, RN-012 |
 | **RNF Relacionados** | RNF-002, RNF-005 |
+| **Notas / Observaciones** | La contraparte (ACT-04) no necesita cuenta registrada para firmar. Solo necesita el enlace. Si el contrato es interno, el sistema valida el dominio de correo antes de permitir la firma (RN-011). |
 
 ---
 
@@ -379,14 +386,14 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos alternativos:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FA-01 | Si el usuario no está satisfecho con el cambio: puede rechazarlo, y el sistema restaura automáticamente la versión anterior. |
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si la IA no puede interpretar la instrucción: muestra un mensaje "No pude entender la instrucción, ¿puedes reformularla?" y da ejemplos de cómo escribirla. |
 | FE-02 | Si la IA no está disponible: el sistema informa al usuario y sugiere editar el texto directamente. |
 
@@ -396,6 +403,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Frecuente |
 | **RN Relacionadas** | RN-001, RN-009 |
 | **RNF Relacionados** | RNF-001, RNF-009 |
+| **Notas / Observaciones** | Cada edición genera automáticamente una nueva versión en el historial, por lo que el usuario puede deshacer cualquier cambio hecho por la IA si no queda satisfecho. |
 
 ---
 
@@ -424,8 +432,8 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si la descripción es demasiado corta o ambigua: la IA solicita más detalles antes de generar el contrato. |
 | FE-02 | Si la IA no está disponible: el sistema informa y redirige al usuario a la opción de usar plantillas predefinidas. |
 
@@ -435,6 +443,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Frecuente |
 | **RN Relacionadas** | RN-001, RN-008, RN-009 |
 | **RNF Relacionados** | RNF-001, RNF-006, RNF-008, RNF-009 |
+| **Notas / Observaciones** | Este caso de uso es el diferenciador principal de ContractAI: permite crear contratos legales completos sin conocimientos jurídicos, solo describiendo la situación en lenguaje cotidiano. |
 
 ---
 
@@ -470,8 +479,8 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 **Flujos de excepción:**
 
-| Código | Descripción |
-|--------|-------------|
+| Campo | Descripción |
+|-------|-------------|
 | FE-01 | Si el administrador intenta eliminarse su propio rol de administrador: el sistema rechaza la acción con el mensaje "No puedes modificar tu propio rol". |
 | FE-02 | Si se intenta eliminar una plantilla que tiene contratos activos basados en ella: el sistema advierte cuántos contratos la usan y solicita confirmación. |
 
@@ -481,6 +490,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Frecuencia de uso** | Ocasional |
 | **RN Relacionadas** | RN-014 |
 | **RNF Relacionados** | RNF-004, RNF-006 |
+| **Notas / Observaciones** | Todas las acciones del administrador quedan registradas en un log de auditoría para trazabilidad. El administrador no puede modificar su propio rol (protección contra bloqueo accidental). |
 
 ---
 
