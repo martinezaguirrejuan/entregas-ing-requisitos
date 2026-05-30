@@ -68,10 +68,10 @@ Los actores son todas las personas, roles o sistemas externos que **interactúan
 | **Nombre del Actor** | Contraparte |
 | **Tipo** | Secundario |
 | **Descripción** | Tercero externo (cliente, proveedor, socio) que recibe un enlace compartido para revisar y firmar un contrato. **No necesita tener cuenta registrada en ContractAI** para firmar. |
-| **Responsabilidades** | Revisar el contrato recibido por enlace y firmarlo digitalmente si está de acuerdo con los términos. |
+| **Responsabilidades** | Revisar el contrato recibido por enlace y firmarlo digitalmente si está de acuerdo con los términos. Al firmar un contrato, el sistema genera automáticamente una constancia de firma con validez probatoria (HU-17). |
 | **Permisos / Rol** | Solo lectura y firma — no puede editar, descargar ni acceder al repositorio del propietario. |
 | **CU Relacionados** | CU-06 |
-| **HU Relacionadas** | HU-07, HU-05 |
+| **HU Relacionadas** | HU-07, HU-05, HU-17 |
 | **Restricciones** | Solo puede acceder al contrato específico del enlace recibido. El enlace puede tener fecha de expiración. |
 
 ---

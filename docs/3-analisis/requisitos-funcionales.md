@@ -19,7 +19,7 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 |-------|-------------|
 | **ID** | RF-001 |
 | **HU Relacionada** | HU-04 |
-| **Descripción** | El sistema debe permitir registrar nuevos usuarios solicitando nombre, correo electrónico y contraseña. La contraseña debe cumplir un mínimo de seguridad (8 caracteres, al menos una mayúscula y un número). |
+| **Descripción** | El sistema debe permitir registrar nuevos usuarios solicitando nombre, correo electrónico y contraseña. La contraseña debe cumplir un mínimo de seguridad conforme a los criterios de seguridad definidos en RN-015. |
 
 ---
 
@@ -29,7 +29,7 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 |-------|-------------|
 | **ID** | RF-002 |
 | **HU Relacionada** | HU-21 |
-| **Descripción** | El sistema debe permitir al usuario autenticarse ingresando su correo electrónico y contraseña registrados. Al autenticarse correctamente, el sistema debe iniciar una sesión activa y redirigir al usuario a su repositorio personal de contratos. |
+| **Descripción** | El sistema debe permitir al usuario autenticarse ingresando su correo electrónico y contraseña registrados. Al autenticarse correctamente, el sistema debe iniciar una sesión activa y redirigir al usuario a su repositorio personal de contratos. El sistema debe aplicar la política de bloqueo temporal definida en RN-016. |
 
 ---
 
@@ -189,7 +189,7 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 |-------|-------------|
 | **ID** | RF-018 |
 | **HU Relacionada** | HU-14 |
-| **Descripción** | El sistema debe enviar notificaciones automáticas al usuario en los siguientes casos: (a) cuando la contraparte firma el contrato; (b) cuando un contrato está a 7 días o menos de su fecha de vencimiento; (c) cuando el análisis de riesgo detecta nivel alto en un contrato nuevo o editado. |
+| **Descripción** | El sistema debe enviar notificaciones automáticas al usuario ante los eventos definidos en RN-002 (riesgo alto) y RN-012 (vencimiento próximo), y adicionalmente cuando una contraparte firma un contrato compartido. |
 
 ---
 
@@ -203,13 +203,13 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 
 ---
 
-## RF-020 — Recuperación de contraseña y autenticación de dos factores (2FA)
+## RF-020 — Recuperación de contraseña
 
 | Campo | Descripción |
 |-------|-------------|
 | **ID** | RF-020 |
 | **HU Relacionada** | HU-16 |
-| **Descripción** | El sistema debe: (a) permitir solicitar recuperación de contraseña enviando un enlace temporal al correo registrado, válido por 24 horas; (b) ofrecer la opción de activar autenticación de dos factores (2FA) mediante una aplicación de verificación o código por correo, como capa de seguridad adicional al iniciar sesión. |
+| **Descripción** | El sistema debe permitir al usuario solicitar la recuperación de su contraseña, generando un enlace temporal de un solo uso conforme a RN-010. |
 
 ---
 
@@ -280,7 +280,19 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 
 ---
 
-> **Total: 25 requisitos funcionales**
+---
+
+## RF-026 — Activación de autenticación de dos factores (2FA)
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RF-026 |
+| **HU Relacionada** | HU-22 |
+| **Descripción** | El sistema debe permitir al usuario activar o desactivar la autenticación de dos factores (2FA) desde la configuración de su cuenta. Al activarla, el sistema solicitará un código de verificación adicional en cada inicio de sesión. |
+
+---
+
+> **Total: 26 requisitos funcionales**
 >
 > **Correcciones del docente aplicadas:**
 > - RF-003: IA nombrada explícitamente en la generación de contratos.
@@ -290,3 +302,4 @@ Los requisitos funcionales describen **qué debe hacer el sistema**: cada acció
 > - RF-002: Inicio de sesión agregado como RF independiente (antes solo existía registro).
 > - RF-023: Matriz de roles y permisos definida con detalle por funcionalidad.
 > - RF-025: Nuevo RF para el control de acceso por rol en toda la plataforma.
+> - RF-026: Activación de 2FA agregado como RF independiente (HU-22).

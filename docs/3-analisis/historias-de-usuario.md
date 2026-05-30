@@ -192,15 +192,15 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 
 ---
 
-## HU-16 — Recuperación de contraseña y doble factor de seguridad
+## HU-16 — Recuperación de contraseña
 
 | Campo | Descripción |
 |-------|-------------|
 | **ID** | HU-16 |
-| **Título** | Recuperación de contraseña y autenticación de dos factores |
+| **Título** | Recuperación de contraseña |
 | **Como** | Usuario registrado |
-| **Quiero** | recuperar mi contraseña recibiendo un enlace en mi correo, y poder activar la verificación en dos pasos (2FA) |
-| **Para** | recuperar el acceso a mi cuenta si olvido mi clave y proteger mis contratos con una capa de seguridad extra |
+| **Quiero** | recuperar mi contraseña mediante el correo electrónico registrado |
+| **Para** | recuperar el acceso a mi cuenta en caso de olvido de contraseña |
 
 ---
 
@@ -264,4 +264,18 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 
 ---
 
-> **Total: 21 historias de usuario**
+---
+
+## HU-22 — Activación de autenticación de dos factores (2FA)
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | HU-22 |
+| **Título** | Activación de autenticación de dos factores (2FA) |
+| **Como** | Usuario registrado |
+| **Quiero** | activar o desactivar la autenticación de dos factores (2FA) en mi cuenta |
+| **Para** | añadir una capa adicional de seguridad frente a accesos no autorizados |
+
+---
+
+> **Total: 22 historias de usuario**

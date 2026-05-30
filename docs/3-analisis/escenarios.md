@@ -1,5 +1,7 @@
 # Escenarios de Casos de Uso
 
+> **Nota de revisión:** De acuerdo con la retroalimentación del docente, esta sección ha sido eliminada del documento unificado. Los flujos de los casos de uso (Sección 7) ya incluyen los escenarios. Este archivo se conserva en el repositorio como referencia histórica.
+
 ---
 
 ## Escenario: Registrar cuenta (CU-01)

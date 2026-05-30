@@ -79,7 +79,7 @@ Los requisitos no funcionales describen **cómo debe comportarse el sistema**: s
 |-------|-------------|
 | **ID** | RNF-007 |
 | **Categoría** | Disponibilidad offline |
-| **Descripción** | El sistema debe permitir al usuario consultar contratos previamente guardados incluso cuando no tenga conexión a internet, garantizando acceso a documentos importantes en todo momento. |
+| **Descripción** | El sistema debe permitir al usuario consultar contratos previamente guardados incluso cuando no tenga conexión a internet, garantizando acceso a documentos importantes en todo momento. Se implementará mediante tecnología de Service Worker (PWA) que almacena los contratos en caché local del navegador. |
 | **Métrica** | Contratos guardados accesibles en modo offline sin pérdida de contenido. |
 
 ---
@@ -91,7 +91,7 @@ Los requisitos no funcionales describen **cómo debe comportarse el sistema**: s
 | **ID** | RNF-008 |
 | **Categoría** | Calidad del contenido |
 | **Descripción** | Los contratos generados por el sistema deben cumplir con un estándar mínimo de extensión y estructura para tener validez formal. Un contrato de pocas líneas o sin cláusulas numeradas no es aceptable. |
-| **Métrica** | Mínimo **900 palabras** y al menos **10 cláusulas numeradas** por contrato. |
+| **Métrica** | El contrato debe contener al menos **5 cláusulas numeradas** y abarcar: objeto, partes, valor/contraprestación, duración y obligaciones. Contratos breves pueden ser válidos si cubren estos elementos esenciales. |
 
 ---
 
@@ -106,4 +106,39 @@ Los requisitos no funcionales describen **cómo debe comportarse el sistema**: s
 
 ---
 
-> **Total: 9 requisitos no funcionales**
+---
+
+## RNF-010 — Cifrado de comunicaciones (HTTPS/TLS)
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RNF-010 |
+| **Categoría** | Seguridad |
+| **Descripción** | Toda comunicación entre el cliente (navegador) y el servidor de ContractAI debe realizarse mediante protocolo HTTPS con TLS 1.2 o superior. No se permite tráfico HTTP sin cifrar. |
+| **Métrica** | 100% de las solicitudes servidas sobre HTTPS/TLS 1.2+. Redireccionamiento automático de HTTP a HTTPS. |
+
+---
+
+## RNF-011 — Cifrado de datos sensibles en reposo
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RNF-011 |
+| **Categoría** | Seguridad |
+| **Descripción** | La información sensible almacenada en la base de datos (contenido de contratos, datos personales y tokens de recuperación) debe estar cifrada en reposo. |
+| **Métrica** | Base de datos con cifrado AES-256 en reposo. Tokens de recuperación almacenados como hash SHA-256, nunca en texto plano. |
+
+---
+
+## RNF-012 — Escalabilidad
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RNF-012 |
+| **Categoría** | Escalabilidad |
+| **Descripción** | El sistema debe soportar crecimiento en el número de usuarios y contratos sin degradación significativa del rendimiento. |
+| **Métrica** | Soportar mínimo 500 usuarios concurrentes y hasta 100.000 contratos almacenados, manteniendo el tiempo de respuesta dentro del límite definido en RNF-001. |
+
+---
+
+> **Total: 12 requisitos no funcionales**

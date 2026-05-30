@@ -55,6 +55,7 @@ Representa cada contrato creado o guardado por un usuario en la plataforma.
 | `fecha_inicio` | DATE | No | Fecha de inicio de la vigencia del contrato. Opcional; si se registra, el sistema la usa para calcular el tiempo activo. |
 | `fecha_vencimiento` | DATE | No | Fecha en que el contrato deja de estar vigente. Si quedan 7 días o menos, el sistema envía una alerta automática al propietario (RN-012). |
 | `enlace_compartir` | VARCHAR(255) | No | Token único generado cuando el propietario decide compartir el contrato por enlace. `NULL` si nunca fue compartido. Permite acceso en modo lectura y firma a quien tenga el enlace (RN-005). |
+| `id_plantilla` | UUID | No (FK) | Plantilla utilizada para generar el contrato. NULL si fue generado desde descripción libre (RF-016). |
 
 ---
 
@@ -136,16 +137,51 @@ Mensajes automáticos que el sistema envía al usuario cuando ocurren eventos im
 
 ---
 
+---
+
+## Entidad: AnalisisRiesgo
+
+Almacena el resultado del análisis de riesgo por cláusula generado por la IA (RF-006). Cada registro corresponde a una cláusula problemática detectada en un contrato.
+
+| Atributo | Tipo de dato | ¿Obligatorio? | Regla de negocio |
+|----------|-------------|:-------------:|-----------------|
+| `id_analisis_clausula` | UUID | Sí (PK) | Identificador único del registro de análisis. |
+| `id_contrato` | UUID | Sí (FK) | Contrato al que pertenece. Un contrato puede tener múltiples registros (uno por cláusula analizada). |
+| `nivel_riesgo` | ENUM(bajo, medio, alto) | Sí | Nivel de riesgo asignado por la IA a esta cláusula (RF-006). |
+| `titulo_clausula` | VARCHAR(200) | Sí | Nombre o encabezado de la cláusula problemática identificada. |
+| `descripcion` | TEXT | Sí | Explicación del problema detectado por la IA en esta cláusula. |
+| `sugerencia` | TEXT | Sí | Recomendación de la IA para mejorar o reemplazar esta cláusula. |
+| `fecha_analisis` | DATETIME | Sí | Fecha y hora en que se realizó el análisis. Automática. |
+
+---
+
+## Entidad: TokenRecuperacion
+
+Almacena los tokens temporales de recuperación de contraseña. Cada token es de un solo uso y expira en 24 horas (RN-010).
+
+| Atributo | Tipo de dato | ¿Obligatorio? | Regla de negocio |
+|----------|-------------|:-------------:|-----------------|
+| `id_token` | UUID | Sí (PK) | Identificador único del token. |
+| `id_usuario` | UUID | Sí (FK) | Usuario que solicitó la recuperación. |
+| `token_hash` | CHAR(64) | Sí | Hash SHA-256 del token enviado al correo. Nunca se almacena en texto plano (RNF-011). |
+| `usado` | BOOLEAN | Sí | true si el token ya fue utilizado. Al usarse, no puede reutilizarse (RN-010). Por defecto: false. |
+| `fecha_expiracion` | DATETIME | Sí | Fecha y hora de expiración: 24 horas después de su creación (RN-010). |
+| `fecha_creacion` | DATETIME | Sí | Fecha y hora de generación del token. Automática. |
+
+---
+
 ## Resumen de entidades y relaciones
 
 | Entidad | # Atributos | Clave primaria | Se relaciona con |
 |---------|:-----------:|----------------|-----------------|
 | Usuario | 8 | `id_usuario` | Contrato, Firma, Plantilla, Notificacion |
-| Contrato | 12 | `id_contrato` | Usuario, Version_Contrato, Constancia_Firma, Notificacion |
+| Contrato | 13 | `id_contrato` | Usuario, Version_Contrato, Constancia_Firma, Notificacion, AnalisisRiesgo, Plantilla |
 | Version_Contrato | 5 | `id_version` | Contrato |
 | Firma | 6 | `id_firma` | Usuario, Constancia_Firma |
 | Constancia_Firma | 8 | `id_constancia` | Contrato, Firma |
 | Plantilla | 7 | `id_plantilla` | Usuario (administrador) |
 | Notificacion | 7 | `id_notificacion` | Usuario, Contrato |
+| AnalisisRiesgo | 7 | `id_analisis_clausula` | Contrato |
+| TokenRecuperacion | 6 | `id_token` | Usuario |
 
-> **Total: 7 entidades · 53 atributos definidos**
+> **Total: 9 entidades · 61 atributos definidos**

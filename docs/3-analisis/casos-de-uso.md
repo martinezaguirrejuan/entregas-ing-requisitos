@@ -17,25 +17,26 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | RF-004 Formulario de personalización | CU-03 | Generar contrato desde plantilla |
 | RF-005 Análisis de riesgo | CU-04 | Analizar riesgo de contrato |
 | RF-006 Reporte de cláusulas | CU-04 | Analizar riesgo de contrato |
-| RF-007 Gestión de contratos | CU-05 | Gestionar repositorio de contratos |
+| RF-007 Gestión de contratos | CU-05 | Consultar repositorio de contratos |
 | RF-008 Firma digital | CU-06 | Firmar contrato digitalmente |
 | RF-009 Biblioteca de firmas | CU-06 | Firmar contrato digitalmente |
 | RF-010 Enlace seguro | CU-07 | Compartir contrato con contraparte |
-| RF-011 Descarga en PDF | CU-05 | Gestionar repositorio de contratos |
-| RF-012 Dashboard | CU-05 | Gestionar repositorio de contratos |
+| RF-011 Descarga en PDF | CU-05 | Consultar repositorio de contratos |
+| RF-012 Dashboard | CU-11 | Ver dashboard de contratos |
 | RF-013 Edición en lenguaje natural | CU-08 | Editar contrato con IA |
 | RF-014 Asistente IA | CU-08 | Editar contrato con IA |
 | RF-015 Clasificación interna/externa | CU-03 | Generar contrato desde plantilla |
 | RF-016 Generación libre con IA | CU-09 | Generar contrato desde descripción libre |
-| RF-017 Versionamiento | CU-05 | Gestionar repositorio de contratos |
-| RF-018 Notificaciones | CU-07 | Compartir contrato con contraparte |
-| RF-019 Fechas de vigencia | CU-05 | Gestionar repositorio de contratos |
-| RF-020 Recuperación y 2FA | CU-02 | Iniciar sesión |
+| RF-017 Versionamiento | CU-12 | Gestionar historial de versiones |
+| RF-018 Notificaciones | CU-18 | Gestionar notificaciones automáticas |
+| RF-019 Fechas de vigencia | CU-13 | Registrar vigencia de contrato |
+| RF-020 Recuperación de contraseña | CU-16 | Recuperar contraseña |
 | RF-021 Constancia de firma | CU-06 | Firmar contrato digitalmente |
-| RF-022 Búsqueda y filtrado | CU-05 | Gestionar repositorio de contratos |
-| RF-023 Gestión de roles | CU-10 | Gestionar roles y usuarios |
-| RF-024 Administración de plantillas | CU-10 | Gestionar roles y usuarios |
-| RF-025 Control de acceso por rol | CU-10 | Gestionar roles y usuarios |
+| RF-022 Búsqueda y filtrado | CU-14 | Buscar y filtrar contratos |
+| RF-023 Gestión de roles | CU-10 | Gestionar roles de usuarios |
+| RF-024 Administración de plantillas | CU-15 | Administrar catálogo de plantillas |
+| RF-025 Control de acceso por rol | CU-10 | Gestionar roles de usuarios |
+| RF-026 Activación 2FA | CU-17 | Activar autenticación 2FA |
 
 ---
 
@@ -222,15 +223,15 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 ---
 
-## CU-05 — Gestionar repositorio de contratos
+## CU-05 — Consultar repositorio de contratos
 
 | Campo | Descripción |
 |-------|-------------|
 | **ID** | CU-05 |
-| **Nombre** | Gestionar repositorio de contratos |
-| **HU Relacionada** | HU-03, HU-08, HU-13, HU-15, HU-18 |
+| **Nombre** | Consultar repositorio de contratos |
+| **HU Relacionada** | HU-03 |
 | **Actor(es)** | Freelancer, PYME |
-| **Descripción** | El usuario consulta, busca, filtra, descarga, versiona y administra todos sus contratos desde un repositorio personal centralizado. |
+| **Descripción** | El usuario accede a su repositorio personal para consultar, guardar, editar, descargar en PDF y eliminar sus contratos. |
 | **Precondiciones** | El usuario está autenticado y tiene al menos un contrato guardado. |
 | **Postcondiciones** | Según la acción realizada: el contrato es encontrado, descargado, restaurado a versión anterior o eliminado. |
 
@@ -277,7 +278,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **HU Relacionada** | HU-05, HU-06, HU-17 |
 | **Actor(es)** | Freelancer, PYME, Contraparte |
 | **Descripción** | El usuario firma un contrato dibujando su firma en pantalla o seleccionando una firma guardada. El sistema genera automáticamente una constancia de firma con validez probatoria. |
-| **Precondiciones** | El contrato existe en la plataforma. El usuario está autenticado (o accede por enlace como contraparte). |
+| **Precondiciones** | El contrato existe en la plataforma. El usuario está autenticado (o accede por enlace como contraparte). Si el contrato fue analizado por IA, el puntaje de riesgo debe estar calculado previamente antes de proceder a firmar. |
 | **Postcondiciones** | El contrato queda marcado como firmado. Se genera la constancia con sello de tiempo, IP y hash SHA-256. |
 
 **Flujo principal:**
@@ -301,7 +302,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 | Campo | Descripción |
 |-------|-------------|
-| FE-01 | Si el contrato tiene un puntaje de riesgo mayor a 70: el sistema muestra una advertencia y solicita que el usuario confirme explícitamente que acepta los riesgos antes de firmar (RN-002). |
+| FE-01 | Si el contrato tiene puntaje de riesgo mayor a 70 calculado previamente: el sistema muestra advertencia y solicita confirmación explícita (RN-002). |
 | FE-02 | Si el área de firma queda vacía: el sistema no permite continuar y muestra "Debes dibujar tu firma para continuar". |
 
 | Campo | Descripción |
@@ -447,19 +448,19 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 ---
 
-## CU-10 — Gestionar roles y catálogo de plantillas
+## CU-10 — Gestionar roles de usuarios
 
 | Campo | Descripción |
 |-------|-------------|
 | **ID** | CU-10 |
-| **Nombre** | Gestionar roles y catálogo de plantillas |
-| **HU Relacionada** | HU-19, HU-20 |
+| **Nombre** | Gestionar roles de usuarios |
+| **HU Relacionada** | HU-19 |
 | **Actor(es)** | Administrador de plataforma |
-| **Descripción** | El administrador gestiona los roles de los usuarios de la plataforma y mantiene actualizado el catálogo de plantillas disponibles para todos. |
+| **Descripción** | El administrador asigna y modifica los roles de los usuarios de la plataforma, controlando los niveles de acceso a las funcionalidades del sistema. |
 | **Precondiciones** | El usuario está autenticado con rol de Administrador de plataforma. |
-| **Postcondiciones** | Los cambios de rol o de plantilla quedan aplicados inmediatamente para todos los usuarios afectados. |
+| **Postcondiciones** | Los cambios de rol quedan aplicados inmediatamente para los usuarios afectados. |
 
-**Flujo principal — Gestión de roles:**
+**Flujo principal:**
 
 | Paso | Actor | Acción |
 |------|-------|--------|
@@ -469,20 +470,11 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | 4 | Sistema | Aplica el cambio de rol inmediatamente y ajusta los permisos del usuario. |
 | 5 | Sistema | Registra la acción en el log de auditoría. |
 
-**Flujo principal — Gestión de plantillas:**
-
-| Paso | Actor | Acción |
-|------|-------|--------|
-| 1 | Administrador | Accede al catálogo de plantillas desde el panel. |
-| 2 | Administrador | Crea, edita o elimina una plantilla, asignándola a una categoría. |
-| 3 | Sistema | Actualiza el catálogo y lo hace disponible para todos los usuarios en tiempo real. |
-
 **Flujos de excepción:**
 
 | Campo | Descripción |
 |-------|-------------|
 | FE-01 | Si el administrador intenta eliminarse su propio rol de administrador: el sistema rechaza la acción con el mensaje "No puedes modificar tu propio rol". |
-| FE-02 | Si se intenta eliminar una plantilla que tiene contratos activos basados en ella: el sistema advierte cuántos contratos la usan y solicita confirmación. |
 
 | Campo | Descripción |
 |-------|-------------|
@@ -494,4 +486,277 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 ---
 
-> **Total: 10 casos de uso**
+---
+
+## CU-11 — Ver dashboard de contratos
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-11 |
+| **Nombre** | Ver dashboard de contratos |
+| **HU Relacionada** | HU-08 |
+| **Actor(es)** | Freelancer, PYME |
+| **Descripción** | El usuario visualiza un panel de control con estadísticas agregadas de sus contratos: totales, distribución por estado y nivel de riesgo promedio. |
+| **Precondiciones** | Autenticado, tiene al menos un contrato. |
+| **Postcondiciones** | Dashboard con estadísticas actualizadas visible. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Accede al dashboard desde el menú. |
+| 2 | Sistema | Consulta contratos y calcula estadísticas. |
+| 3 | Sistema | Muestra: total, distribución por estado y riesgo promedio. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Sin contratos: "Aún no tienes contratos. ¡Crea el primero!" |
+
+---
+
+## CU-12 — Gestionar historial de versiones
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-12 |
+| **Nombre** | Gestionar historial de versiones |
+| **HU Relacionada** | HU-13 |
+| **Actor(es)** | Freelancer, PYME |
+| **Descripción** | El usuario consulta el historial de cambios de un contrato y restaura versiones anteriores. |
+| **Precondiciones** | Autenticado, contrato con mínimo 2 versiones. |
+| **Postcondiciones** | Usuario puede previsualizar versión o restaurarla (crea nueva versión en historial). |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Abre contrato → "Ver historial". |
+| 2 | Sistema | Lista versiones con número, fecha y autor. |
+| 3 | Usuario | Selecciona versión. |
+| 4 | Usuario | Confirma restauración. |
+| 5 | Sistema | Crea nueva versión con el contenido anterior. |
+
+**Flujos alternativos:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FA-01 | Solo previsualizar sin restaurar no genera cambios. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Si contrato está firmado, el sistema advierte antes de restaurar. |
+
+---
+
+## CU-13 — Registrar vigencia de contrato
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-13 |
+| **Nombre** | Registrar vigencia de contrato |
+| **HU Relacionada** | HU-15 |
+| **Actor(es)** | Freelancer, PYME |
+| **Descripción** | El usuario registra fechas de inicio y vencimiento para gestionar la vigencia del contrato. |
+| **Precondiciones** | Autenticado, contrato en estado borrador o activo. |
+| **Postcondiciones** | Fechas guardadas, alertas automáticas programadas (RN-012). |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Abre contrato → sección de vigencia. |
+| 2 | Usuario | Ingresa fechas de inicio y vencimiento. |
+| 3 | Sistema | Valida que inicio < vencimiento. |
+| 4 | Sistema | Guarda y programa alerta a 7 días del vencimiento. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Si vencimiento < inicio: error, no guarda. |
+| FE-02 | Si vencimiento ya pasó: advierte y cambia estado a "vencido". |
+
+---
+
+## CU-14 — Buscar y filtrar contratos
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-14 |
+| **Nombre** | Buscar y filtrar contratos |
+| **HU Relacionada** | HU-18 |
+| **Actor(es)** | Freelancer, PYME |
+| **Descripción** | El usuario busca y filtra contratos en su repositorio por nombre, fecha, tipo, clasificación o estado. |
+| **Precondiciones** | Autenticado, al menos un contrato. |
+| **Postcondiciones** | Lista filtrada mostrada. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Accede al repositorio. |
+| 2 | Usuario | Usa barra de búsqueda o filtros. |
+| 3 | Sistema | Filtra en tiempo real. |
+| 4 | Usuario | Selecciona el contrato deseado. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Sin resultados: "No se encontraron contratos con estos criterios" + opción limpiar filtros. |
+
+---
+
+## CU-15 — Administrar catálogo de plantillas
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-15 |
+| **Nombre** | Administrar catálogo de plantillas |
+| **HU Relacionada** | HU-20 |
+| **Actor(es)** | Administrador de plataforma |
+| **Descripción** | El Administrador crea, edita, organiza y elimina plantillas del catálogo global. |
+| **Precondiciones** | Autenticado con rol Administrador. |
+| **Postcondiciones** | Catálogo actualizado y visible para todos los usuarios. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Administrador | Accede al módulo de plantillas. |
+| 2 | Administrador | Elige acción (crear/editar/desactivar/eliminar). |
+| 3 | Administrador | Completa campos (nombre, categoría, contenido base con marcadores {{campo}}). |
+| 4 | Sistema | Valida y guarda. |
+| 5 | Sistema | Actualiza catálogo en tiempo real. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Eliminar plantilla con contratos activos: advertencia con cantidad de contratos afectados. |
+| FE-02 | Contenido base vacío: no permite guardar. |
+
+| Campo | Descripción |
+|-------|-------------|
+| **RN Relacionadas** | RN-014 |
+
+---
+
+## CU-16 — Recuperar contraseña
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-16 |
+| **Nombre** | Recuperar contraseña |
+| **HU Relacionada** | HU-16 |
+| **Actor(es)** | Cualquier usuario registrado, Sistema de Correo Electrónico |
+| **Descripción** | El usuario que olvidó su contraseña solicita un enlace temporal para establecer una nueva. |
+| **Precondiciones** | Usuario con cuenta y correo registrado. |
+| **Postcondiciones** | Nueva contraseña guardada, token invalidado. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Clic en "¿Olvidaste tu contraseña?". |
+| 2 | Usuario | Ingresa correo. |
+| 3 | Sistema | Genera token único y lo almacena. |
+| 4 | Sistema de correo | Envía enlace. |
+| 5 | Usuario | Abre enlace e ingresa nueva contraseña. |
+| 6 | Sistema | Valida RN-015, guarda cifrada y desactiva token. |
+
+**Flujos alternativos:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FA-01 | Desde configuración con sesión activa, sin este flujo. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Correo no registrado: "Si el correo está registrado, recibirás el enlace en breve" (por seguridad, no confirma existencia). |
+| FE-02 | Enlace expirado o usado: "Este enlace ya no es válido" + solicitar uno nuevo. |
+| FE-03 | Fallo en correo: informar al usuario e invitar a reintentar. |
+
+| Campo | Descripción |
+|-------|-------------|
+| **RN Relacionadas** | RN-010, RN-015 |
+
+---
+
+## CU-17 — Activar autenticación 2FA
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-17 |
+| **Nombre** | Activar autenticación 2FA |
+| **HU Relacionada** | HU-22 |
+| **Actor(es)** | Freelancer, PYME, Administrador |
+| **Descripción** | El usuario activa o desactiva la autenticación de dos factores (2FA) en su cuenta. |
+| **Precondiciones** | Usuario autenticado. |
+| **Postcondiciones** | Estado de 2FA actualizado. Próximos inicios de sesión exigen o no código adicional. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Accede a Configuración → Seguridad / 2FA. |
+| 2 | Sistema | Muestra estado actual. |
+| 3 | Sistema | Para activar: genera código QR para app autenticadora (TOTP). |
+| 4 | Usuario | Escanea QR y confirma con primer código. |
+| 5 | Sistema | Verifica, activa y guarda estado. |
+
+**Flujos alternativos:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FA-01 | Para desactivar: confirma contraseña e ingresa código activo. Sistema desactiva. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Código de confirmación incorrecto: no activa, solicita reintentar. |
+
+---
+
+## CU-18 — Gestionar notificaciones automáticas
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-18 |
+| **Nombre** | Gestionar notificaciones automáticas |
+| **HU Relacionada** | HU-14 |
+| **Actor(es)** | Sistema (proceso interno), Sistema de Correo, Usuario (receptor) |
+| **Descripción** | El sistema detecta eventos contractuales y genera notificaciones automáticas. |
+| **Precondiciones** | Contratos activos en el sistema. Eventos disparadores configurados (RN-002, RN-012, firma completada). |
+| **Postcondiciones** | Notificación almacenada en entidad Notificacion. Usuario notificado por correo y en plataforma. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Sistema | Detecta evento: (a) firma completada por contraparte, (b) contrato a 7 días de vencer, (c) riesgo IA > 70. |
+| 2 | Sistema | Crea registro en Notificacion. |
+| 3 | Sistema de correo | Envía aviso. |
+| 4 | Sistema | Muestra notificación en panel de avisos. |
+| 5 | Usuario | Lee y marca como leída. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Si falla el correo: reintenta 3 veces. Notificación en plataforma disponible independientemente. |
+
+| Campo | Descripción |
+|-------|-------------|
+| **RN Relacionadas** | RN-002, RN-012 |
+
+---
+
+> **Total: 18 casos de uso**

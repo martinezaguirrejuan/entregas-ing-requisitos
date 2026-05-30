@@ -163,4 +163,28 @@ Las reglas de negocio son **políticas y restricciones** que el sistema debe res
 
 ---
 
-> **Total: 14 reglas de negocio**
+---
+
+## RN-015 — Requisitos mínimos de contraseña
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RN-015 |
+| **Título** | Requisitos mínimos de contraseña |
+| **Descripción** | **SI** un usuario crea o cambia su contraseña, **ENTONCES** debe tener mínimo 8 caracteres, al menos una letra mayúscula y al menos un número. Contraseñas que no cumplan estos criterios serán rechazadas. |
+| **Origen** | HU-04, RF-001 |
+
+---
+
+## RN-016 — Bloqueo temporal por intentos fallidos
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | RN-016 |
+| **Título** | Bloqueo temporal por intentos fallidos |
+| **Descripción** | **SI** un usuario realiza 5 intentos de inicio de sesión fallidos consecutivos, **ENTONCES** el sistema bloqueará el acceso a esa cuenta por 15 minutos e informará al usuario del bloqueo y su duración. |
+| **Origen** | HU-21, RF-002 |
+
+---
+
+> **Total: 16 reglas de negocio**
