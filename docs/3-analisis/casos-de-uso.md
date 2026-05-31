@@ -21,7 +21,7 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | RF-008 Firma digital | CU-06 | Firmar contrato digitalmente |
 | RF-009 Biblioteca de firmas | CU-06 | Firmar contrato digitalmente |
 | RF-010 Enlace seguro | CU-07 | Compartir contrato con contraparte |
-| RF-011 Descarga en PDF | CU-05 | Consultar repositorio de contratos |
+| RF-011 Descarga en PDF | CU-19 | Descargar contrato en PDF |
 | RF-012 Dashboard | CU-11 | Ver dashboard de contratos |
 | RF-013 Edición en lenguaje natural | CU-08 | Editar contrato con IA |
 | RF-014 Asistente IA | CU-08 | Editar contrato con IA |
@@ -231,9 +231,9 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 | **Nombre** | Consultar repositorio de contratos |
 | **HU Relacionada** | HU-03 |
 | **Actor(es)** | Freelancer, PYME |
-| **Descripción** | El usuario accede a su repositorio personal para consultar, guardar, editar, descargar en PDF y eliminar sus contratos. |
+| **Descripción** | El usuario accede a su repositorio personal y visualiza la lista de sus contratos guardados con su información básica. |
 | **Precondiciones** | El usuario está autenticado y tiene al menos un contrato guardado. |
-| **Postcondiciones** | Según la acción realizada: el contrato es encontrado, descargado, restaurado a versión anterior o eliminado. |
+| **Postcondiciones** | El usuario visualiza su lista de contratos y puede navegar a cualquiera de ellos. |
 
 **Flujo principal:**
 
@@ -241,31 +241,22 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 |------|-------|--------|
 | 1 | Usuario | Accede a su repositorio personal desde el menú principal. |
 | 2 | Sistema | Muestra la lista de contratos con nombre, estado, fecha de creación y nivel de riesgo. |
-| 3 | Usuario | Usa los filtros disponibles (por nombre, fecha, tipo o estado) para encontrar el contrato deseado. |
-| 4 | Usuario | Selecciona un contrato y elige la acción: ver, editar, descargar PDF, ver historial de versiones, o eliminar. |
-| 5 | Sistema | Ejecuta la acción seleccionada y confirma el resultado al usuario. |
-
-**Flujos alternativos:**
-
-| Campo | Descripción |
-|-------|-------------|
-| FA-01 | Si el usuario quiere restaurar una versión anterior: accede al historial, selecciona la versión deseada y confirma la restauración. El sistema crea una nueva versión con el contenido anterior. |
-| FA-02 | Si el usuario quiere ver el dashboard general: el sistema muestra el total de contratos, distribución por estado y riesgo promedio. |
+| 3 | Usuario | Selecciona un contrato para abrirlo y ver su detalle. |
+| 4 | Sistema | Muestra el contenido del contrato seleccionado. |
 
 **Flujos de excepción:**
 
 | Campo | Descripción |
 |-------|-------------|
-| FE-01 | Si el usuario intenta eliminar un contrato firmado: el sistema solicita confirmación explícita antes de proceder (RN-003). |
-| FE-02 | Si no hay contratos que coincidan con el filtro aplicado: el sistema muestra "No se encontraron contratos con estos criterios" y sugiere ampliar la búsqueda. |
+| FE-01 | Si el usuario no tiene contratos guardados: el sistema muestra el mensaje "Aún no tienes contratos" con un enlace directo para crear el primero. |
 
 | Campo | Descripción |
 |-------|-------------|
 | **Prioridad** | Alta |
 | **Frecuencia de uso** | Diaria |
-| **RN Relacionadas** | RN-001, RN-003 |
+| **RN Relacionadas** | RN-001 |
 | **RNF Relacionados** | RNF-001, RNF-003, RNF-007 |
-| **Notas / Observaciones** | Este CU agrupa múltiples acciones sobre contratos. En una implementación real podría dividirse en casos de uso más pequeños por cada acción (ver, editar, eliminar, etc.). |
+| **Notas / Observaciones** | Desde la vista de detalle de un contrato el usuario puede acceder a otras funcionalidades: buscar (CU-14), descargar PDF (CU-19), ver historial (CU-12), firmar (CU-06) o editar con IA (CU-08). |
 
 ---
 
@@ -759,4 +750,42 @@ Un caso de uso describe una **secuencia de pasos** entre un actor y el sistema p
 
 ---
 
-> **Total: 18 casos de uso**
+## CU-19 — Descargar contrato en PDF
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | CU-19 |
+| **Nombre** | Descargar contrato en PDF |
+| **HU Relacionada** | HU-10 |
+| **Actor(es)** | Freelancer, PYME |
+| **Descripción** | El usuario descarga una copia del contrato en formato PDF para imprimirla o compartirla fuera de la plataforma. |
+| **Precondiciones** | El usuario está autenticado y tiene abierto un contrato guardado. |
+| **Postcondiciones** | El archivo PDF se descarga al dispositivo del usuario con el contenido actual del contrato. |
+
+**Flujo principal:**
+
+| Paso | Actor | Acción |
+|------|-------|--------|
+| 1 | Usuario | Abre el contrato que desea descargar. |
+| 2 | Usuario | Hace clic en "Descargar PDF". |
+| 3 | Sistema | Genera el documento PDF con el contenido actual del contrato y los datos de las partes. |
+| 4 | Sistema | Inicia la descarga automática del archivo en el navegador del usuario. |
+
+**Flujos de excepción:**
+
+| Campo | Descripción |
+|-------|-------------|
+| FE-01 | Si el contrato tiene contenido vacío o incompleto: el sistema advierte al usuario antes de generar el PDF. |
+| FE-02 | Si falla la generación del PDF: el sistema muestra un mensaje de error y sugiere intentarlo de nuevo. |
+
+| Campo | Descripción |
+|-------|-------------|
+| **Prioridad** | Alta |
+| **Frecuencia de uso** | Frecuente |
+| **RN Relacionadas** | RN-001 |
+| **RNF Relacionados** | RNF-001, RNF-008 |
+| **Notas / Observaciones** | El PDF generado incluye el contenido del contrato con formato profesional. Si el contrato está firmado, el PDF incluye también la constancia de firma con sello UTC, IP y hash SHA-256. |
+
+---
+
+> **Total: 19 casos de uso**
