@@ -4,7 +4,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 
 **Proyecto:** ContractAI | **Empresa:** NexaOps  
 **Docente:** Gloria Amparo Lora Patiño | **Uniremington · 2026**  
-**Integrantes:** Juan Fernando Martínez Aguirre · Santiago García Patiño
+**Integrantes:** Juan Fernando Martínez Aguirre · Maddox Lasciche
 
 > **¿Qué es una Historia de Usuario?**
 > Es una frase corta que describe qué quiere hacer un tipo de usuario y qué beneficio obtiene.
@@ -19,7 +19,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-01 |
 | **Título** | Generación de contratos desde plantilla |
 | **Como** | Freelancer |
-| **Quiero** | generar un contrato de prestación de servicios seleccionando una plantilla predefinida y completando los datos básicos |
+| **Quiero** | generar un contrato seleccionando una plantilla del catálogo y completando los datos básicos |
 | **Para** | formalizar mis acuerdos con clientes de forma rápida, sin necesitar conocimientos legales ni contratar un abogado |
 
 ---
@@ -91,8 +91,8 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-07 |
 | **Título** | Compartir contratos con enlace seguro |
 | **Como** | Usuario |
-| **Quiero** | compartir un contrato enviando un enlace seguro a la otra parte |
-| **Para** | que pueda revisarlo y firmarlo desde su navegador sin necesidad de crear una cuenta en la plataforma |
+| **Quiero** | compartir un contrato generando un enlace seguro con token único, estado (activo / revocado / vencido) y fecha de expiración |
+| **Para** | que la otra parte pueda revisarlo y firmarlo desde su navegador sin necesidad de crear una cuenta, y poder revocar el acceso en cualquier momento |
 
 ---
 
@@ -175,7 +175,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-14 |
 | **Título** | Notificaciones automáticas |
 | **Como** | Usuario |
-| **Quiero** | recibir notificaciones automáticas cuando la contraparte firme el contrato, cuando esté próximo a vencer, o cuando el análisis detecte riesgo alto |
+| **Quiero** | recibir notificaciones automáticas (por correo, push o en la plataforma) cuando la contraparte firme el contrato, cuando esté próximo a vencer, o cuando el análisis detecte riesgo alto |
 | **Para** | estar siempre informado del estado de mis acuerdos sin necesidad de revisar la plataforma manualmente |
 
 ---
@@ -200,7 +200,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **Título** | Recuperación de contraseña |
 | **Como** | Usuario registrado |
 | **Quiero** | recuperar mi contraseña mediante el correo electrónico registrado |
-| **Para** | recuperar el acceso a mi cuenta en caso de olvido de contraseña |
+| **Para** | recuperar el acceso a mi cuenta en caso de olvido, usando un enlace temporal de un solo uso |
 
 ---
 
@@ -211,7 +211,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-17 |
 | **Título** | Constancia de firma con validez probatoria |
 | **Como** | Usuario |
-| **Quiero** | que el sistema genere automáticamente un certificado de firma que incluya la hora exacta del firmado, la dirección IP del firmante y una huella digital del documento |
+| **Quiero** | que el sistema genere automáticamente un certificado de firma que incluya la hora exacta del firmado (sello UTC), la dirección IP del firmante y una huella SHA-256 del documento |
 | **Para** | tener prueba irrefutable de que el contrato fue firmado, con validez ante terceros e instancias legales |
 
 ---
@@ -235,7 +235,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-19 |
 | **Título** | Gestión de roles de usuarios |
 | **Como** | Administrador de plataforma |
-| **Quiero** | asignar y modificar el rol de cada usuario (Freelancer, PYME o Administrador), donde cada rol tiene acceso a funciones diferentes |
+| **Quiero** | asignar y modificar el rol de cada usuario (Freelancer, PYME o Administrador) desde el catálogo de roles del sistema |
 | **Para** | controlar quién puede hacer qué dentro de la plataforma y proteger las funciones críticas del sistema |
 
 ---
@@ -247,7 +247,7 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 | **ID** | HU-20 |
 | **Título** | Administración del catálogo de plantillas |
 | **Como** | Administrador de plataforma |
-| **Quiero** | crear, editar, eliminar y organizar por categorías las plantillas de contratos disponibles para todos los usuarios |
+| **Quiero** | crear, editar, eliminar y organizar por tipo de contrato las plantillas disponibles para todos los usuarios |
 | **Para** | mantener el catálogo actualizado, relevante y bien clasificado para que cualquier usuario encuentre rápidamente lo que necesita |
 
 ---
@@ -264,18 +264,52 @@ ContractAI es una plataforma que usa **inteligencia artificial (IA)** para ayuda
 
 ---
 
----
-
-## HU-22 — Activación de autenticación de dos factores (2FA)
+## HU-22 — Activación de verificación en dos pasos (MFA)
 
 | Campo | Descripción |
 |-------|-------------|
 | **ID** | HU-22 |
-| **Título** | Activación de autenticación de dos factores (2FA) |
+| **Título** | Activación de verificación en dos pasos (MFA) |
 | **Como** | Usuario registrado |
-| **Quiero** | activar o desactivar la autenticación de dos factores (2FA) en mi cuenta |
+| **Quiero** | activar o desactivar la verificación en dos pasos (`mfa_activado`) en mi cuenta |
 | **Para** | añadir una capa adicional de seguridad frente a accesos no autorizados |
 
 ---
 
-> **Total: 22 historias de usuario**
+## HU-23 — Solicitud de firma a múltiples partes
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | HU-23 |
+| **Título** | Solicitud y seguimiento de firmas |
+| **Como** | Usuario |
+| **Quiero** | solicitar la firma de un contrato a uno o varios firmantes (con cuenta o sin ella), definiendo el orden en que deben firmar y consultando el estado de cada solicitud (pendiente / firmado / rechazado) |
+| **Para** | coordinar el proceso de firma de forma ordenada y saber en todo momento quién ha firmado y quién está pendiente |
+
+---
+
+## HU-24 — Inactivación y reactivación de cuentas de usuario
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | HU-24 |
+| **Título** | Inactivación y reactivación de cuentas |
+| **Como** | Administrador de plataforma |
+| **Quiero** | inactivar o reactivar la cuenta de un usuario registrado (campo `activo` de Usuario) y buscarlo por nombre o correo |
+| **Para** | gestionar el acceso a la plataforma sin necesidad de eliminar la cuenta ni perder el historial del usuario |
+
+---
+
+## HU-25 — Trazabilidad de acceso de firmantes externos
+
+| Campo | Descripción |
+|-------|-------------|
+| **ID** | HU-25 |
+| **Título** | Trazabilidad de acceso de firmantes externos |
+| **Como** | Usuario propietario del contrato |
+| **Quiero** | que el sistema registre automáticamente cada vez que un firmante externo abre un enlace compartido (fecha, IP y navegador) |
+| **Para** | contar con evidencia de que el destinatario accedió al documento antes de firmarlo, con valor probatorio ante terceros |
+
+---
+
+> **Total: 25 historias de usuario**
