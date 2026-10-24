@@ -1,0 +1,35 @@
+@startuml seq2_generar_contrato
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceArrowThickness 1.5
+skinparam ParticipantPadding 15
+
+title Diagrama de Secuencia 2 — HU-01: Generar contrato desde plantilla
+
+actor "Freelancer" as U
+participant "Vista\nContratoView" as V
+participant "Controlador\nContratoController" as C
+participant "Modelo\nPlantilla" as P
+participant "Modelo\nContrato" as CT
+participant "Modelo\nVersionContrato" as VC
+
+U -> V : seleccionarPlantilla(idPlantilla, titulo)
+V -> C : generarContrato(idPlantilla, titulo, idUsuario)
+C -> P : consultarPlantilla(idPlantilla)
+P --> C : plantilla | null
+
+alt Plantilla inactiva o no encontrada (RF-005)
+  C --> V : error("Plantilla no disponible")
+  V --> U : mostrarError()
+
+else Plantilla activa
+  C -> CT : crearContrato(titulo, idUsuario, idPlantilla, estado="Borrador")
+  CT --> C : idContrato
+
+  C -> VC : crearVersion(idContrato, numero=1, contenido, idUsuario)
+  VC --> C : idVersion
+
+  C --> V : contratoCreado(idContrato)
+  V --> U : redirigirEditor(idContrato)
+end
+@enduml

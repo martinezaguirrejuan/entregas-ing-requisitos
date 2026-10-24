@@ -1,0 +1,171 @@
+@startuml paquete_usuarios
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam classFontSize 12
+skinparam class {
+  BackgroundColor #F7F9FC
+  BorderColor #34495E
+  ArrowColor #34495E
+}
+skinparam packageStyle rectangle
+hide circle
+title Paquete Usuarios
+
+' C10: Notificacion se mueve al paquete Usuarios
+enum TipoNotificacion {
+  contrato_firmado
+  contrato_por_vencer
+  riesgo_detectado
+}
+
+' D16: accion como ENUM con dominio controlado
+enum AccionAuditoria {
+  login
+  logout
+  crear_contrato
+  editar_contrato
+  inactivar_usuario
+  eliminar_plantilla
+  revocar_enlace
+  solicitar_firma
+}
+
+package "Usuarios" #EAF2FB {
+
+  class Rol {
+    - idRol: UUID
+    - nombreRol: String
+    - descripcion: String
+    - fechaCreacion: DateTime
+    + Rol(nombreRol: String, descripcion: String)
+    + getIdRol(): UUID
+    + getNombreRol(): String
+    + setNombreRol(nombreRol: String): void
+    + getDescripcion(): String
+    + setDescripcion(descripcion: String): void
+    + {static} crearRol(): Rol
+    + {static} consultarRol(idRol: UUID): Rol
+    + actualizarRol(idRol: UUID, datos: Rol): Rol
+  }
+
+  class Usuario {
+    - idUsuario: UUID
+    - nombre: String
+    - correo: String
+    - contrasenaHash: String
+    - activo: Boolean
+    - mfaActivado: Boolean
+    - fechaRegistro: DateTime
+    + Usuario(nombre: String, correo: String, contrasenaHash: String, rol: Rol)
+    + getIdUsuario(): UUID
+    + getNombre(): String
+    + setNombre(nombre: String): void
+    + getCorreo(): String
+    + setCorreo(correo: String): void
+    + setContrasenaHash(hash: String): void
+    + getActivo(): Boolean
+    + setMfaActivado(valor: Boolean): void
+    + inactivarUsuario(idUsuario: UUID): void
+    + {static} crearUsuario(): Usuario
+    + {static} consultarUsuario(idUsuario: UUID): Usuario
+    + actualizarUsuario(idUsuario: UUID, datos: Usuario): Usuario
+  }
+
+  ' C01: composicion — TokenRecuperacion no existe sin Usuario
+  class TokenRecuperacion {
+    - idToken: UUID
+    - tokenHash: String
+    - usado: Boolean
+    - fechaExpiracion: DateTime
+    - fechaCreacion: DateTime
+    + TokenRecuperacion(tokenHash: String, fechaExpiracion: DateTime, propietario: Usuario)
+    + getIdToken(): UUID
+    + getUsado(): Boolean
+    + setUsado(valor: Boolean): void
+    + getFechaExpiracion(): DateTime
+    + {static} crearToken(): TokenRecuperacion
+    + {static} consultarToken(idToken: UUID): TokenRecuperacion
+    + actualizarToken(idToken: UUID, datos: TokenRecuperacion): TokenRecuperacion
+  }
+
+  ' D11: entidad_afectada, id_registro_afectado, D16: accion como ENUM
+  class LogAuditoria {
+    - idLog: UUID
+    - accion: AccionAuditoria
+    - detalle: String
+    - entidadAfectada: String
+    - idRegistroAfectado: UUID
+    - ipOrigen: String
+    - fechaAccion: DateTime
+    + LogAuditoria(accion: AccionAuditoria, detalle: String, ipOrigen: String, ejecutor: Usuario)
+    + getIdLog(): UUID
+    + getAccion(): AccionAuditoria
+    + getDetalle(): String
+    + getEntidadAfectada(): String
+    + getIdRegistroAfectado(): UUID
+    + getFechaAccion(): DateTime
+    + {static} crearLog(): LogAuditoria
+    + {static} consultarLog(idLog: UUID): LogAuditoria
+  }
+
+  ' C10: Notificacion movida aqui desde paquete Contratos
+  class Notificacion {
+    - idNotificacion: UUID
+    - tipo: TipoNotificacion
+    - mensaje: String
+    - leida: Boolean
+    - fechaLectura: DateTime
+    - canal: String
+    - estadoEnvio: String
+    - fechaEnvio: DateTime
+    + Notificacion(tipo: TipoNotificacion, mensaje: String, destinatario: Usuario)
+    + getIdNotificacion(): UUID
+    + getMensaje(): String
+    + getLeida(): Boolean
+    + setLeida(valor: Boolean): void
+    + getFechaLectura(): DateTime
+    + setFechaLectura(fecha: DateTime): void
+    + getEstadoEnvio(): String
+    + {static} crearNotificacion(): Notificacion
+    + {static} consultarNotificacion(idNotificacion: UUID): Notificacion
+  }
+}
+
+' C01: composicion — TokenRecuperacion y LogAuditoria no existen sin Usuario
+Rol "1" --> "0..*" Usuario : clasifica >
+Usuario "1" *-- "0..*" TokenRecuperacion : solicita >
+Usuario "1" *-- "0..*" LogAuditoria : registra >
+Usuario "1" --> "0..*" Notificacion : recibe >
+
+Notificacion ..> TipoNotificacion
+LogAuditoria ..> AccionAuditoria
+
+' Contrato externo para Notificacion
+class Contrato <<externo>> {
+  - idContrato: UUID
+}
+
+Contrato "0..1" --> "0..*" Notificacion : origina >
+
+note right of TokenRecuperacion
+  {unique: tokenHash}
+  D15: UNIQUE declarado. Permite busqueda
+  directa al abrir el enlace de recuperacion.
+end note
+
+note right of LogAuditoria
+  D11: entidadAfectada + idRegistroAfectado forman
+  una referencia polimórfica (no FK formal) que
+  identifica el registro especifico afectado (RN-09).
+  D16: accion es ENUM con dominio controlado.
+end note
+
+note right of Notificacion
+  D21: fechaLectura (cuando se leyo),
+  canal (email/push/sistema),
+  estadoEnvio (pendiente/enviado/fallido).
+  C10: movida al paquete Usuarios para
+  descongestionar el paquete Contratos.
+end note
+
+@enduml

@@ -1,0 +1,48 @@
+@startuml seq1_login
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceArrowThickness 1.5
+skinparam ParticipantPadding 15
+skinparam BoxPadding 10
+
+title Diagrama de Secuencia 1 — HU-21: Iniciar sesión
+
+actor "Freelancer" as U
+participant "Vista\nLoginView" as V
+participant "Controlador\nAuthController" as C
+participant "Modelo\nUsuario" as M
+participant "Modelo\nLogAuditoria" as L
+
+U -> V : ingresarCredenciales(correo, contrasena)
+V -> C : autenticar(correo, contrasena)
+C -> M : consultarPorCorreo(correo)
+M --> C : usuario | null
+
+alt Usuario no encontrado
+  C --> V : error("Usuario no encontrado")
+  V --> U : mostrarError()
+
+else Cuenta inactiva (RN-014)
+  C --> V : error("Cuenta inactiva")
+  V --> U : mostrarError()
+
+else Credenciales incorrectas
+  C -> M : incrementarIntentosFallidos(idUsuario)
+  M --> C : intentos: int
+  alt intentos >= 5 (RN-016)
+    C -> M : bloquearCuenta(idUsuario, 15)
+    C --> V : error("Cuenta bloqueada 15 minutos")
+    V --> U : mostrarBloqueo()
+  else intentos < 5
+    C --> V : error("Credenciales incorrectas")
+    V --> U : mostrarError()
+  end
+
+else Credenciales correctas
+  C -> M : resetearIntentosFallidos(idUsuario)
+  C -> L : crearLog(accion="login", idUsuario, ip)
+  L --> C : ok
+  C --> V : sesionCreada(token, idUsuario)
+  V --> U : redirigirDashboard()
+end
+@enduml

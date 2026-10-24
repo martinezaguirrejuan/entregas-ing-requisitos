@@ -1,0 +1,121 @@
+@startuml paquete_firmas
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam classFontSize 12
+skinparam class {
+  BackgroundColor #F7F9FC
+  BorderColor #34495E
+  ArrowColor #34495E
+}
+skinparam packageStyle rectangle
+hide circle
+title Paquete Firmas
+
+' ===================== CLASE ABSTRACTA (C02) =====================
+' Resuelve el arco excluyente de Firma: una sola asociacion
+' obligatoria hacia Firmante, sin necesidad de CHECK ni {xor}.
+
+abstract class Firmante {
+  # nombre: String
+  # correo: String
+  + getNombre(): String
+  + getCorreo(): String
+}
+
+package "Firmas" #FEF9E7 {
+
+  class FirmanteExterno {
+    - idFirmante: UUID
+    - fechaRegistro: DateTime
+    + FirmanteExterno(nombre: String, correo: String)
+    + getIdFirmante(): UUID
+    + getNombre(): String
+    + getCorreo(): String
+    + getFechaRegistro(): DateTime
+    + {static} crearFirmante(): FirmanteExterno
+    + {static} consultarFirmante(idFirmante: UUID): FirmanteExterno
+  }
+
+  class Firma {
+    - idFirma: UUID
+    - rutaImagenFirma: String
+    - nombreFirma: String
+    - enBiblioteca: Boolean
+    - activa: Boolean
+    - fechaCreacion: DateTime
+    + Firma(rutaImagenFirma: String, propietario: Firmante)
+    + getIdFirma(): UUID
+    + getRutaImagenFirma(): String
+    + getNombreFirma(): String
+    + setNombreFirma(nombre: String): void
+    + getEnBiblioteca(): Boolean
+    + setEnBiblioteca(valor: Boolean): void
+    + getActiva(): Boolean
+    + inactivarFirma(): void
+    + {static} crearFirma(): Firma
+    + {static} consultarFirma(idFirma: UUID): Firma
+  }
+
+  class ConstanciaFirma {
+    - idConstancia: UUID
+    - firmanteNombre: String
+    - firmanteCorreo: String
+    - ipFirmante: String
+    - selloTiempoUtc: DateTime
+    - hashSha256: String
+    + ConstanciaFirma(firmanteNombre: String, firmanteCorreo: String, ipFirmante: String)
+    + getIdConstancia(): UUID
+    + getFirmanteNombre(): String
+    + getFirmanteCorreo(): String
+    + getHashSha256(): String
+    + {static} crearConstancia(): ConstanciaFirma
+    + {static} consultarConstancia(idConstancia: UUID): ConstanciaFirma
+  }
+}
+
+' Usuario (externo) tambien es Firmante
+class Usuario <<externo>> {
+  - idUsuario: UUID
+}
+
+class Contrato <<externo>> {
+  - idContrato: UUID
+}
+
+' Generalizacion: C02 resuelve el arco excluyente de Firma
+Firmante <|-- FirmanteExterno : hereda >
+Firmante <|-- Usuario : hereda >
+
+' Firma conoce a su firmante (un Usuario o FirmanteExterno)
+Firmante "1" --> "0..*" Firma : es firmante de >
+
+' Composicion: ConstanciaFirma no existe sin Firma (C01)
+Firma "1" *-- "0..*" ConstanciaFirma : respalda >
+
+Contrato "1" --> "0..*" ConstanciaFirma : certifica >
+
+note bottom of Firma
+  inactivarFirma(): borrado logico (C04).
+  Solo permitido en firmas de biblioteca
+  (enBiblioteca=TRUE) sin ConstanciaFirma
+  asociada (RN-07).
+  activa=FALSE bloquea el uso de la firma.
+end note
+
+note right of Firmante
+  Clase abstracta que resuelve los hallazgos
+  C02, C03 y D01: Firma asocia con Firmante
+  mediante una sola relacion obligatoria, sin
+  arco excluyente ni restriccion {xor} ni CHECK.
+  Usuario (paquete Usuarios) y FirmanteExterno
+  son especializaciones de Firmante.
+end note
+
+note bottom of ConstanciaFirma
+  Registro inmutable con valor probatorio legal.
+  FK hacia Firma y Contrato declaradas con
+  ON DELETE RESTRICT (RN-06). No puede
+  eliminarse bajo ninguna circunstancia.
+end note
+
+@enduml

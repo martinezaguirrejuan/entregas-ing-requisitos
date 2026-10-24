@@ -1,0 +1,140 @@
+@startuml paquete_ia
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam classFontSize 12
+skinparam class {
+  BackgroundColor #F7F9FC
+  BorderColor #34495E
+  ArrowColor #34495E
+}
+skinparam packageStyle rectangle
+hide circle
+title Paquete IA
+
+enum TipoOperacionIA {
+  generar
+  modificar
+  consultar
+  analizar
+}
+
+enum OrigenIA {
+  chatbot
+  ia_general
+}
+
+enum NivelRiesgo {
+  bajo
+  medio
+  alto
+}
+
+' C16: dominio cerrado convertido a ENUM
+enum ResultadoOperacion {
+  exito
+  error_modelo
+  timeout
+}
+
+package "IA" #F9EBF8 {
+
+  class InteraccionIA {
+    - idInteraccion: UUID
+    - tipoOperacion: TipoOperacionIA
+    - origenIa: OrigenIA
+    - entradaUsuario: String
+    - respuestaTexto: String
+    - rutaArchivoGenerado: String
+    - modeloUtilizado: String
+    - resultadoOperacion: ResultadoOperacion
+    - fecha: DateTime
+    + InteraccionIA(tipoOperacion: TipoOperacionIA, origenIa: OrigenIA, entradaUsuario: String, solicitante: Usuario)
+    + getIdInteraccion(): UUID
+    + getTipoOperacion(): TipoOperacionIA
+    + getOrigenIa(): OrigenIA
+    + getEntradaUsuario(): String
+    + getRespuestaTexto(): String
+    + getRutaArchivoGenerado(): String
+    + getModeloUtilizado(): String
+    + getResultadoOperacion(): ResultadoOperacion
+    + getFecha(): DateTime
+    + {static} crearInteraccion(): InteraccionIA
+    + {static} consultarInteraccion(idInteraccion: UUID): InteraccionIA
+  }
+
+  class AnalisisRiesgo {
+    - idAnalisisClausula: UUID
+    - nivelRiesgo: NivelRiesgo
+    - pesoRiesgo: Integer
+    - tituloClausula: String
+    - numeroClausula: Integer
+    - posicionInicio: Integer
+    - posicionFin: Integer
+    - descripcion: String
+    - sugerencia: String
+    - fechaAnalisis: DateTime
+    + AnalisisRiesgo(nivelRiesgo: NivelRiesgo, pesoRiesgo: Integer, tituloClausula: String, descripcion: String, sugerencia: String)
+    + getIdAnalisisClausula(): UUID
+    + getNivelRiesgo(): NivelRiesgo
+    + getPesoRiesgo(): Integer
+    + getTituloClausula(): String
+    + getNumeroClausula(): Integer
+    + getPosicionInicio(): Integer
+    + getPosicionFin(): Integer
+    + getDescripcion(): String
+    + getSugerencia(): String
+    + {static} crearAnalisis(): AnalisisRiesgo
+    + {static} consultarAnalisis(idAnalisisClausula: UUID): AnalisisRiesgo
+  }
+}
+
+class Usuario <<externo>> {
+  - idUsuario: UUID
+}
+
+' D05: AnalisisRiesgo referencia VersionContrato, no Contrato
+class VersionContrato <<externo>> {
+  - idVersion: UUID
+  - numeroVersion: Integer
+}
+
+class Contrato <<externo>> {
+  - idContrato: UUID
+  - /puntajeRiesgo: Integer
+}
+
+Usuario "1" --> "0..*" InteraccionIA : solicita >
+Contrato "0..1" --> "0..*" InteraccionIA : aplica sobre >
+
+' C01: composicion — AnalisisRiesgo no existe sin InteraccionIA
+InteraccionIA "1" *-- "0..*" AnalisisRiesgo : genera >
+
+' D05: la relacion va a VersionContrato, no a Contrato
+VersionContrato "1" --> "0..*" AnalisisRiesgo : fue analizada en >
+
+InteraccionIA ..> TipoOperacionIA
+InteraccionIA ..> OrigenIA
+InteraccionIA ..> ResultadoOperacion
+AnalisisRiesgo ..> NivelRiesgo
+
+note right of InteraccionIA
+  D17: respuestaTexto y rutaArchivoGenerado
+  reemplazan al campo unico respuestaGenerada.
+  Solo uno de los dos sera no-NULL segun el
+  tipo de operacion ejecutada.
+  resultadoOperacion: ENUM (D16).
+end note
+
+note right of AnalisisRiesgo
+  pesoRiesgo: bajo=1, medio=3, alto=5.
+  Formula de /puntajeRiesgo en Contrato:
+  ROUND(SUM(pesoRiesgo) / COUNT(*)) * 20
+  Solo aplica sobre la version vigente (D04, D05).
+  numeroClausula + posicionInicio/Fin permiten
+  resaltar la clausula en pantalla (D06).
+end note
+
+note "Formula del cache:\n/puntajeRiesgo =\nROUND(SUM(pesoRiesgo)/COUNT(*))*20\nSe recalcula al terminar\ncada analisis (RN-02, RN-10)" as NFormula
+NFormula .. Contrato
+
+@enduml

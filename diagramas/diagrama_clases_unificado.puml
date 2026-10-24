@@ -1,0 +1,552 @@
+@startuml diagrama_clases_unificado
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam classFontSize 9
+skinparam class {
+  BackgroundColor #F7F9FC
+  BorderColor #34495E
+  ArrowColor #34495E
+}
+skinparam packageStyle rectangle
+hide circle
+title Diagrama de Clases — ContractAI (Vista Unificada — 17 entidades)
+
+' ═══════════════════════════════════════════════════════
+' ENUMs — Usuarios
+' ═══════════════════════════════════════════════════════
+enum TipoNotificacion {
+  contrato_firmado
+  contrato_por_vencer
+  riesgo_detectado
+}
+
+enum AccionAuditoria {
+  login
+  logout
+  crear_contrato
+  editar_contrato
+  inactivar_usuario
+  eliminar_plantilla
+  revocar_enlace
+  solicitar_firma
+}
+
+' ═══════════════════════════════════════════════════════
+' ENUMs — Contratos
+' ═══════════════════════════════════════════════════════
+enum ClasificacionContrato {
+  interno
+  externo
+}
+
+enum EstadoContrato {
+  borrador
+  activo
+  firmado
+  vencido
+}
+
+enum EstadoEnlace {
+  activo
+  revocado
+  vencido
+}
+
+enum EstadoFirmaSolicitada {
+  pendiente
+  firmado
+  rechazado
+}
+
+' ═══════════════════════════════════════════════════════
+' ENUMs — IA
+' ═══════════════════════════════════════════════════════
+enum TipoOperacionIA {
+  generar
+  modificar
+  consultar
+  analizar
+}
+
+enum OrigenIA {
+  chatbot
+  ia_general
+}
+
+enum NivelRiesgo {
+  bajo
+  medio
+  alto
+}
+
+enum ResultadoOperacion {
+  exito
+  error_modelo
+  timeout
+}
+
+' ═══════════════════════════════════════════════════════
+' Clase abstracta — fuera de paquetes (C02)
+' ═══════════════════════════════════════════════════════
+abstract class Firmante {
+  # nombre: String
+  # correo: String
+  + getNombre(): String
+  + getCorreo(): String
+}
+
+' ═══════════════════════════════════════════════════════
+' PAQUETE USUARIOS
+' ═══════════════════════════════════════════════════════
+package "Usuarios" #EAF2FB {
+
+  class Rol {
+    - idRol: UUID
+    - nombreRol: String
+    - descripcion: String
+    - fechaCreacion: DateTime
+    + Rol(nombreRol: String, descripcion: String)
+    + getIdRol(): UUID
+    + getNombreRol(): String
+    + setNombreRol(nombreRol: String): void
+    + getDescripcion(): String
+    + setDescripcion(descripcion: String): void
+    + {static} crearRol(): Rol
+    + {static} consultarRol(idRol: UUID): Rol
+    + actualizarRol(idRol: UUID, datos: Rol): Rol
+  }
+
+  class Usuario {
+    - idUsuario: UUID
+    - nombre: String
+    - correo: String
+    - contrasenaHash: String
+    - activo: Boolean
+    - mfaActivado: Boolean
+    - fechaRegistro: DateTime
+    + Usuario(nombre: String, correo: String, contrasenaHash: String, rol: Rol)
+    + getIdUsuario(): UUID
+    + getNombre(): String
+    + setNombre(nombre: String): void
+    + getCorreo(): String
+    + setCorreo(correo: String): void
+    + setContrasenaHash(hash: String): void
+    + getActivo(): Boolean
+    + setMfaActivado(valor: Boolean): void
+    + inactivarUsuario(idUsuario: UUID): void
+    + {static} crearUsuario(): Usuario
+    + {static} consultarUsuario(idUsuario: UUID): Usuario
+    + actualizarUsuario(idUsuario: UUID, datos: Usuario): Usuario
+  }
+
+  class TokenRecuperacion {
+    - idToken: UUID
+    - tokenHash: String
+    - usado: Boolean
+    - fechaExpiracion: DateTime
+    - fechaCreacion: DateTime
+    + TokenRecuperacion(tokenHash: String, fechaExpiracion: DateTime, propietario: Usuario)
+    + getIdToken(): UUID
+    + getUsado(): Boolean
+    + setUsado(valor: Boolean): void
+    + getFechaExpiracion(): DateTime
+    + {static} crearToken(): TokenRecuperacion
+    + {static} consultarToken(idToken: UUID): TokenRecuperacion
+    + actualizarToken(idToken: UUID, datos: TokenRecuperacion): TokenRecuperacion
+  }
+
+  class LogAuditoria {
+    - idLog: UUID
+    - accion: AccionAuditoria
+    - detalle: String
+    - entidadAfectada: String
+    - idRegistroAfectado: UUID
+    - ipOrigen: String
+    - fechaAccion: DateTime
+    + LogAuditoria(accion: AccionAuditoria, detalle: String, ipOrigen: String, ejecutor: Usuario)
+    + getIdLog(): UUID
+    + getAccion(): AccionAuditoria
+    + getDetalle(): String
+    + getEntidadAfectada(): String
+    + getIdRegistroAfectado(): UUID
+    + getFechaAccion(): DateTime
+    + {static} crearLog(): LogAuditoria
+    + {static} consultarLog(idLog: UUID): LogAuditoria
+  }
+
+  class Notificacion {
+    - idNotificacion: UUID
+    - tipo: TipoNotificacion
+    - mensaje: String
+    - leida: Boolean
+    - fechaLectura: DateTime
+    - canal: String
+    - estadoEnvio: String
+    - fechaEnvio: DateTime
+    + Notificacion(tipo: TipoNotificacion, mensaje: String, destinatario: Usuario)
+    + getIdNotificacion(): UUID
+    + getMensaje(): String
+    + getLeida(): Boolean
+    + setLeida(valor: Boolean): void
+    + getFechaLectura(): DateTime
+    + setFechaLectura(fecha: DateTime): void
+    + getEstadoEnvio(): String
+    + {static} crearNotificacion(): Notificacion
+    + {static} consultarNotificacion(idNotificacion: UUID): Notificacion
+  }
+}
+
+' ═══════════════════════════════════════════════════════
+' PAQUETE CONTRATOS
+' ═══════════════════════════════════════════════════════
+package "Contratos" #EAF7EF {
+
+  class TipoContrato {
+    - idTipoContrato: UUID
+    - nombreTipo: String
+    - descripcion: String
+    - fechaCreacion: DateTime
+    + TipoContrato(nombreTipo: String, descripcion: String)
+    + getIdTipoContrato(): UUID
+    + getNombreTipo(): String
+    + setNombreTipo(nombreTipo: String): void
+    + getDescripcion(): String
+    + setDescripcion(descripcion: String): void
+    + {static} crearTipoContrato(): TipoContrato
+    + {static} consultarTipoContrato(idTipoContrato: UUID): TipoContrato
+    + actualizarTipoContrato(idTipoContrato: UUID, datos: TipoContrato): TipoContrato
+  }
+
+  class Contrato {
+    - idContrato: UUID
+    - titulo: String
+    - clasificacion: ClasificacionContrato
+    - contenido: String
+    - estado: EstadoContrato
+    - /puntajeRiesgo: Integer
+    - fechaCreacion: DateTime
+    - fechaActualizacion: DateTime
+    - fechaInicio: Date
+    - fechaVencimiento: Date
+    + Contrato(titulo: String, tipo: TipoContrato, propietario: Usuario)
+    + getIdContrato(): UUID
+    + getTitulo(): String
+    + setTitulo(titulo: String): void
+    + getContenido(): String
+    + setContenido(contenido: String): void
+    + getEstado(): EstadoContrato
+    + setEstado(estado: EstadoContrato): void
+    + getPuntajeRiesgo(): Integer
+    + getFechaVencimiento(): Date
+    + setFechaVencimiento(fecha: Date): void
+    + generarVersion(): VersionContrato
+    + compartir(fechaExpiracion: DateTime): EnlaceCompartir
+    + marcarFirmado(): void
+    + estaVencido(): Boolean
+    + recalcularPuntajeRiesgo(): Integer
+    + {static} crearContrato(): Contrato
+    + {static} consultarContrato(idContrato: UUID): Contrato
+    + actualizarContrato(idContrato: UUID, datos: Contrato): Contrato
+  }
+
+  class VersionContrato {
+    - idVersion: UUID
+    - numeroVersion: Integer
+    - contenido: String
+    - fechaGuardado: DateTime
+    + VersionContrato(numeroVersion: Integer, contenido: String, autor: Usuario)
+    + getIdVersion(): UUID
+    + getNumeroVersion(): Integer
+    + getContenido(): String
+    + getFechaGuardado(): DateTime
+    + {static} crearVersion(): VersionContrato
+    + {static} consultarVersion(idVersion: UUID): VersionContrato
+  }
+
+  class EnlaceCompartir {
+    - idEnlace: UUID
+    - token: String
+    - estado: EstadoEnlace
+    - correoDestino: String
+    - fechaCreacion: DateTime
+    - fechaExpiracion: DateTime
+    + EnlaceCompartir(contrato: Contrato, fechaExpiracion: DateTime)
+    + getIdEnlace(): UUID
+    + getToken(): String
+    + getEstado(): EstadoEnlace
+    + getCorreoDestino(): String
+    + getFechaExpiracion(): DateTime
+    + revocar(): void
+    + esValido(): Boolean
+    + {static} crearEnlace(): EnlaceCompartir
+    + {static} consultarEnlace(idEnlace: UUID): EnlaceCompartir
+    + actualizarEstado(idEnlace: UUID, estado: EstadoEnlace): EnlaceCompartir
+  }
+
+  class AccesoEnlace {
+    - idAcceso: UUID
+    - fechaAcceso: DateTime
+    - ipOrigen: String
+    - userAgent: String
+    + AccesoEnlace(enlace: EnlaceCompartir, ipOrigen: String)
+    + getIdAcceso(): UUID
+    + getFechaAcceso(): DateTime
+    + getIpOrigen(): String
+    + getUserAgent(): String
+    + {static} crearAcceso(): AccesoEnlace
+    + {static} consultarAcceso(idAcceso: UUID): AccesoEnlace
+  }
+
+  class Plantilla {
+    - idPlantilla: UUID
+    - nombre: String
+    - contenidoBase: String
+    - activa: Boolean
+    - fechaCreacion: DateTime
+    + Plantilla(nombre: String, tipo: TipoContrato, contenidoBase: String, admin: Usuario)
+    + getIdPlantilla(): UUID
+    + getNombre(): String
+    + setNombre(nombre: String): void
+    + getContenidoBase(): String
+    + setContenidoBase(contenido: String): void
+    + getActiva(): Boolean
+    + {static} crearPlantilla(): Plantilla
+    + {static} consultarPlantilla(idPlantilla: UUID): Plantilla
+    + actualizarPlantilla(idPlantilla: UUID, datos: Plantilla): Plantilla
+    + inactivarPlantilla(idPlantilla: UUID): void
+  }
+
+  class FirmaSolicitada {
+    - idFirmaSolicitada: UUID
+    - orden: Integer
+    - estado: EstadoFirmaSolicitada
+    - fechaSolicitud: DateTime
+    - fechaRespuesta: DateTime
+    + FirmaSolicitada(contrato: Contrato, orden: Integer)
+    + getIdFirmaSolicitada(): UUID
+    + getOrden(): Integer
+    + getEstado(): EstadoFirmaSolicitada
+    + getFechaSolicitud(): DateTime
+    + getFechaRespuesta(): DateTime
+    + {static} crearFirmaSolicitada(): FirmaSolicitada
+    + {static} consultarFirmaSolicitada(idFirmaSolicitada: UUID): FirmaSolicitada
+  }
+}
+
+' ═══════════════════════════════════════════════════════
+' PAQUETE FIRMAS
+' ═══════════════════════════════════════════════════════
+package "Firmas" #FEF9E7 {
+
+  class FirmanteExterno {
+    - idFirmante: UUID
+    - fechaRegistro: DateTime
+    + FirmanteExterno(nombre: String, correo: String)
+    + getIdFirmante(): UUID
+    + getNombre(): String
+    + getCorreo(): String
+    + getFechaRegistro(): DateTime
+    + {static} crearFirmante(): FirmanteExterno
+    + {static} consultarFirmante(idFirmante: UUID): FirmanteExterno
+  }
+
+  class Firma {
+    - idFirma: UUID
+    - rutaImagenFirma: String
+    - nombreFirma: String
+    - enBiblioteca: Boolean
+    - activa: Boolean
+    - fechaCreacion: DateTime
+    + Firma(rutaImagenFirma: String, propietario: Firmante)
+    + getIdFirma(): UUID
+    + getRutaImagenFirma(): String
+    + getNombreFirma(): String
+    + setNombreFirma(nombre: String): void
+    + getEnBiblioteca(): Boolean
+    + setEnBiblioteca(valor: Boolean): void
+    + getActiva(): Boolean
+    + inactivarFirma(): void
+    + {static} crearFirma(): Firma
+    + {static} consultarFirma(idFirma: UUID): Firma
+  }
+
+  class ConstanciaFirma {
+    - idConstancia: UUID
+    - firmanteNombre: String
+    - firmanteCorreo: String
+    - ipFirmante: String
+    - selloTiempoUtc: DateTime
+    - hashSha256: String
+    + ConstanciaFirma(firmanteNombre: String, firmanteCorreo: String, ipFirmante: String)
+    + getIdConstancia(): UUID
+    + getFirmanteNombre(): String
+    + getFirmanteCorreo(): String
+    + getHashSha256(): String
+    + {static} crearConstancia(): ConstanciaFirma
+    + {static} consultarConstancia(idConstancia: UUID): ConstanciaFirma
+  }
+}
+
+' ═══════════════════════════════════════════════════════
+' PAQUETE IA
+' ═══════════════════════════════════════════════════════
+package "IA" #F9EBF8 {
+
+  class InteraccionIA {
+    - idInteraccion: UUID
+    - tipoOperacion: TipoOperacionIA
+    - origenIa: OrigenIA
+    - entradaUsuario: String
+    - respuestaTexto: String
+    - rutaArchivoGenerado: String
+    - modeloUtilizado: String
+    - resultadoOperacion: ResultadoOperacion
+    - fecha: DateTime
+    + InteraccionIA(tipoOperacion: TipoOperacionIA, origenIa: OrigenIA, entradaUsuario: String, solicitante: Usuario)
+    + getIdInteraccion(): UUID
+    + getTipoOperacion(): TipoOperacionIA
+    + getOrigenIa(): OrigenIA
+    + getEntradaUsuario(): String
+    + getRespuestaTexto(): String
+    + getRutaArchivoGenerado(): String
+    + getModeloUtilizado(): String
+    + getResultadoOperacion(): ResultadoOperacion
+    + getFecha(): DateTime
+    + {static} crearInteraccion(): InteraccionIA
+    + {static} consultarInteraccion(idInteraccion: UUID): InteraccionIA
+  }
+
+  class AnalisisRiesgo {
+    - idAnalisisClausula: UUID
+    - nivelRiesgo: NivelRiesgo
+    - pesoRiesgo: Integer
+    - tituloClausula: String
+    - numeroClausula: Integer
+    - posicionInicio: Integer
+    - posicionFin: Integer
+    - descripcion: String
+    - sugerencia: String
+    - fechaAnalisis: DateTime
+    + AnalisisRiesgo(nivelRiesgo: NivelRiesgo, pesoRiesgo: Integer, tituloClausula: String, descripcion: String, sugerencia: String)
+    + getIdAnalisisClausula(): UUID
+    + getNivelRiesgo(): NivelRiesgo
+    + getPesoRiesgo(): Integer
+    + getTituloClausula(): String
+    + getNumeroClausula(): Integer
+    + getPosicionInicio(): Integer
+    + getPosicionFin(): Integer
+    + getDescripcion(): String
+    + getSugerencia(): String
+    + {static} crearAnalisis(): AnalisisRiesgo
+    + {static} consultarAnalisis(idAnalisisClausula: UUID): AnalisisRiesgo
+  }
+}
+
+' ═══════════════════════════════════════════════════════
+' RELACIONES — Usuarios
+' ═══════════════════════════════════════════════════════
+Rol "1" --> "0..*" Usuario : clasifica >
+Usuario "1" *-- "0..*" TokenRecuperacion : solicita >
+Usuario "1" *-- "0..*" LogAuditoria : registra >
+Usuario "1" --> "0..*" Notificacion : recibe >
+Notificacion ..> TipoNotificacion
+LogAuditoria ..> AccionAuditoria
+
+' ═══════════════════════════════════════════════════════
+' RELACIONES — Contratos
+' ═══════════════════════════════════════════════════════
+TipoContrato "1" --> "0..*" Contrato : tipifica >
+TipoContrato "1" --> "0..*" Plantilla : categoriza >
+Plantilla "0..1" --> "0..*" Contrato : origina >
+Contrato "1" *-- "0..*" VersionContrato : historial >
+Contrato "1" *-- "0..*" EnlaceCompartir : genera >
+Contrato "1" *-- "0..*" FirmaSolicitada : solicita firmas >
+EnlaceCompartir "1" *-- "0..*" AccesoEnlace : registra accesos >
+Usuario "1" --> "0..*" Contrato : posee >
+Usuario "1" --> "0..*" Plantilla : administra >
+Usuario "0..1" --> "0..*" VersionContrato : genera >
+Firmante "0..1" --> "0..*" FirmaSolicitada : debe firmar >
+Contrato ..> ClasificacionContrato
+Contrato ..> EstadoContrato
+EnlaceCompartir ..> EstadoEnlace
+FirmaSolicitada ..> EstadoFirmaSolicitada
+
+' ═══════════════════════════════════════════════════════
+' RELACIONES — Firmas
+' ═══════════════════════════════════════════════════════
+Firmante <|-- FirmanteExterno : hereda >
+Firmante <|-- Usuario : hereda >
+Firmante "1" --> "0..*" Firma : es firmante de >
+Firma "1" *-- "0..*" ConstanciaFirma : respalda >
+Contrato "1" --> "0..*" ConstanciaFirma : certifica >
+
+' ═══════════════════════════════════════════════════════
+' RELACIONES — IA
+' ═══════════════════════════════════════════════════════
+Usuario "1" --> "0..*" InteraccionIA : solicita >
+Contrato "0..1" --> "0..*" InteraccionIA : aplica sobre >
+InteraccionIA "1" *-- "0..*" AnalisisRiesgo : genera >
+VersionContrato "1" --> "0..*" AnalisisRiesgo : fue analizada en >
+InteraccionIA ..> TipoOperacionIA
+InteraccionIA ..> OrigenIA
+InteraccionIA ..> ResultadoOperacion
+AnalisisRiesgo ..> NivelRiesgo
+
+' ═══════════════════════════════════════════════════════
+' RELACIONES ENTRE PAQUETES — Notificacion origina en Contrato
+' ═══════════════════════════════════════════════════════
+Contrato "0..1" --> "0..*" Notificacion : origina >
+
+' ═══════════════════════════════════════════════════════
+' NOTAS
+' ═══════════════════════════════════════════════════════
+note right of TokenRecuperacion
+  {unique: tokenHash}
+  UNIQUE declarado — permite busqueda
+  directa al abrir el enlace de recuperacion.
+end note
+
+note right of LogAuditoria
+  entidadAfectada + idRegistroAfectado forman
+  referencia polimorf. (RN-09). accion es ENUM.
+end note
+
+note right of VersionContrato
+  {unique(contrato, numeroVersion)} (C09)
+  Numero correlativo unico por contrato.
+end note
+
+note right of EnlaceCompartir
+  esValido(): estado='activo' AND
+  fechaExpiracion > NOW() (RN-04).
+end note
+
+note right of FirmaSolicitada
+  UNIQUE(id_contrato, orden)
+  UNIQUE(id_contrato, id_usuario)
+  UNIQUE(id_contrato, id_firmante)
+end note
+
+note right of Plantilla
+  RN-08: id_admin debe tener rol='administrador'.
+  Trigger BEFORE INSERT/UPDATE en Plantilla.
+end note
+
+note bottom of Firma
+  inactivarFirma(): borrado logico (C04).
+  Solo en firmas biblioteca sin ConstanciaFirma.
+end note
+
+note bottom of ConstanciaFirma
+  Inmutable. FK ON DELETE RESTRICT (RN-06).
+end note
+
+note right of InteraccionIA
+  respuestaTexto XOR rutaArchivoGenerado
+  segun tipo de operacion (D17).
+end note
+
+note "Formula:\n/puntajeRiesgo =\nROUND(SUM(pesoRiesgo)/COUNT(*))*20\nSolo sobre version vigente (RN-02)" as NFormula
+NFormula .. Contrato
+
+@enduml

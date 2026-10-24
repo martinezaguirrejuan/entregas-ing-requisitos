@@ -1,0 +1,60 @@
+@startuml act_critico1_login
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam ArrowColor #2C3E50
+skinparam ActivityBorderColor #2C3E50
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam swimlaneBorderColor #7F8C8D
+skinparam swimlaneBackgroundColor #FDFEFE
+
+title Diagrama de Actividades — Proceso CRÍTICO 1\nHU-21: Iniciar sesión
+
+|Usuario|
+start
+:Ingresar correo y contraseña;
+
+|Sistema|
+:Buscar cuenta por correo\n(Usuario.consultarPorCorreo);
+
+if (¿Usuario encontrado?) then (No)
+  :Mostrar "Usuario no encontrado";
+  stop
+else (Sí)
+  if (¿Cuenta activa? (RN-014)) then (No)
+    :Mostrar "Cuenta inactiva.\nContacte al administrador.";
+    stop
+  else (Sí)
+    :Verificar contraseña\n(hash SHA-256);
+    if (¿Contraseña correcta?) then (No)
+      :Incrementar contador\nde intentos fallidos;
+      if (¿intentos >= 5? (RN-016)) then (Sí)
+        :Bloquear cuenta 15 minutos;
+        :Mostrar "Cuenta bloqueada\npor 15 minutos";
+        stop
+      else (No)
+        :Mostrar "Credenciales incorrectas.\nIntentos restantes: N";
+        |Usuario|
+        :Reintentar;
+        |Sistema|
+      endif
+    else (Sí)
+      :Resetear contador de intentos;
+      if (¿MFA activado? (HU-22 / RF-017)) then (Sí)
+        |Usuario|
+        :Ingresar código de segundo factor;
+        |Sistema|
+        if (¿Código MFA válido?) then (No)
+          :Mostrar "Código incorrecto";
+          stop
+        else (Sí)
+        endif
+      else (No)
+      endif
+      :Crear sesión autenticada;
+      :Registrar en LogAuditoria\n(acción=login, fecha, IP);
+      :Redirigir al dashboard\n(RN-001: acceso a contratos habilitado);
+      stop
+    endif
+  endif
+endif
+@enduml

@@ -1,0 +1,25 @@
+@startuml est_firma_solicitada
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam StateBackgroundColor #ECF0F1
+skinparam StateBorderColor #2C3E50
+skinparam ArrowColor #2C3E50
+
+title Diagrama de Estados — FirmaSolicitada.estado
+
+[*] --> Pendiente : HU-23 / RF-030:\nPropietario solicita firma\n(FirmaSolicitada.crearFirmaSolicitada)
+
+Pendiente --> Firmado : HU-05 / RF-031:\nFirmante registra firma digital\n(Firma.crearFirma +\nConstanciaFirma.crearConstancia)
+
+Pendiente --> Cancelado : HU-23 / RF-030:\nPropietario cancela la solicitud\n(FirmaSolicitada.cancelarSolicitud)
+
+Firmado --> [*]
+Cancelado --> [*]
+
+note right of Firmado
+  Al alcanzar todos Firmado:
+  Contrato.estado → Firmado
+  (RN-3FN-03, transición automática
+  ejecutada por el controlador)
+end note
+@enduml

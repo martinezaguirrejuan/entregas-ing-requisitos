@@ -1,0 +1,42 @@
+@startuml seq4_inactivar_usuario
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceArrowThickness 1.5
+skinparam ParticipantPadding 15
+
+title Diagrama de Secuencia 4 — HU-24: Inactivar cuenta de usuario
+
+actor "Administrador" as A
+participant "Vista\nUsuarioAdminView" as V
+participant "Controlador\nUsuarioController" as C
+participant "Modelo\nUsuario" as U
+participant "Modelo\nLogAuditoria" as L
+
+A -> V : buscarUsuario(criterio)
+V -> C : buscarUsuario(criterio)
+C -> U : consultarPorCriterio(criterio)
+U --> C : listaUsuarios
+C --> V : mostrarResultados(listaUsuarios)
+V --> A : seleccionarUsuario(idUsuario)
+
+A -> V : confirmarInactivacion(idUsuario)
+V -> C : inactivarUsuario(idUsuario, idAdmin)
+
+C -> U : consultarUsuario(idUsuario)
+U --> C : usuario
+
+alt Usuario es único administrador activo (RF-020)
+  C --> V : error("No se puede inactivar el único administrador")
+  V --> A : mostrarError()
+
+else Inactivación permitida (RN-014)
+  C -> U : inactivarUsuario(idUsuario)
+  U --> C : ok
+
+  C -> L : crearLog(accion="inactivar_usuario", idAdmin, idUsuario, ip)
+  L --> C : ok
+
+  C --> V : usuarioInactivado(idUsuario)
+  V --> A : mostrarConfirmacion()
+end
+@enduml

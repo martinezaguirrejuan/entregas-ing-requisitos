@@ -1,0 +1,55 @@
+@startuml act_critico2_firma
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam ArrowColor #2C3E50
+skinparam ActivityBorderColor #2C3E50
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam swimlaneBorderColor #7F8C8D
+skinparam swimlaneBackgroundColor #FDFEFE
+
+title Diagrama de Actividades — Proceso CRÍTICO 2\nHU-05: Firma digital de contrato
+
+|Firmante|
+start
+:Abrir enlace compartido (token);
+
+|Sistema|
+:Buscar EnlaceCompartir por token\n(EnlaceCompartir.consultarPorToken);
+
+if (¿Enlace válido?\nestado=activo AND fecha_expiracion > NOW()\n(RN-005 / RN-3FN-04)) then (No)
+  :Mostrar "Enlace inválido o vencido.\nContacte al propietario.";
+  stop
+else (Sí)
+  :Registrar AccesoEnlace\n(fecha, IP, user-agent) (RF-040);
+  :Mostrar contrato y canvas de firma;
+
+  if (¿Puntaje de riesgo > 70/100?\n(RN-002)) then (Sí)
+    :Mostrar advertencia visual de riesgo alto\nantes de permitir firma;
+  else (No)
+  endif
+
+  |Firmante|
+  :Dibujar firma en el canvas;
+
+  |Sistema|
+  if (¿Firma dibujada?) then (No)
+    :Mostrar "Debe dibujar su firma\npara continuar";
+    |Firmante|
+    :Redibujar;
+    |Sistema|
+  else (Sí)
+  endif
+
+  :Guardar Firma\n(Firma.crearFirma, ruta_imagen_firma) (RF-031);
+  :Generar ConstanciaFirma:\n— Sello UTC\n— IP del firmante\n— Hash SHA-256 del contrato\n(RN-013, ConstanciaFirma.crearConstancia);
+  :Actualizar FirmaSolicitada.estado = firmado;
+
+  if (¿Todos los firmantes completaron?\n(RN-3FN-03)) then (Sí)
+    :Actualizar Contrato.estado = Firmado;
+  else (No)
+  endif
+
+  :Mostrar "Firma registrada correctamente.\nConstancia generada con valor probatorio.";
+  stop
+endif
+@enduml

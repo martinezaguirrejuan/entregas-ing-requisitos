@@ -1,0 +1,53 @@
+@startuml seq3_firma_digital
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceArrowThickness 1.5
+skinparam ParticipantPadding 10
+
+title Diagrama de Secuencia 3 — HU-05: Firma digital de contrato
+
+actor "Firmante" as F
+participant "Vista\nFirmaView" as V
+participant "Controlador\nFirmaController" as C
+participant "Modelo\nEnlaceCompartir" as E
+participant "Modelo\nFirma" as FI
+participant "Modelo\nConstanciaFirma" as CF
+participant "Modelo\nContrato" as CT
+
+F -> V : abrirEnlace(token)
+V -> C : validarEnlace(token)
+C -> E : consultarPorToken(token)
+E --> C : enlace | null
+
+alt Enlace inválido o vencido (RN-005 / RN-3FN-04)
+  C --> V : error("Enlace inválido o vencido")
+  V --> F : mostrarError()
+
+else Enlace válido
+  C -> E : registrarAcceso(fecha, ip, userAgent)
+  C --> V : mostrarFormularioFirma(contratoData)
+  V --> F : mostrarContratoYCanvas()
+
+  F -> V : enviarFirma(imagenBase64, idFirmaSolicitada)
+  V -> C : registrarFirma(imagen, ip, idFirmaSolicitada)
+
+  C -> FI : crearFirma(rutaImagen, idUsuario)
+  FI --> C : idFirma
+
+  C -> CF : crearConstancia(idContrato, idFirma, selloUTC, ip, hashSHA256)
+  CF --> C : idConstancia
+
+  C -> FI : actualizarFirmaSolicitada(idFirmaSolicitada, estado="firmado")
+
+  C -> CT : verificarTodasFirmas(idContrato)
+  CT --> C : todasFirmaron: boolean
+
+  alt Todos firmaron (RN-3FN-03)
+    C -> CT : actualizarEstado(idContrato, "Firmado")
+    CT --> C : ok
+  end
+
+  C --> V : firmaRegistrada(idConstancia)
+  V --> F : mostrarConfirmacion()
+end
+@enduml

@@ -1,0 +1,42 @@
+@startuml act_nocritico2_descargar
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam ArrowColor #2C3E50
+skinparam ActivityBorderColor #2C3E50
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam swimlaneBorderColor #7F8C8D
+skinparam swimlaneBackgroundColor #FDFEFE
+
+title Diagrama de Actividades — Proceso NO CRÍTICO 2\nHU-10: Descargar contrato en PDF
+
+|Usuario|
+start
+:Seleccionar contrato del repositorio;
+:Hacer clic en "Descargar PDF";
+
+|Sistema|
+if (¿Sesión activa? (RN-001)) then (No)
+  :Rechazar y redirigir al login;
+  stop
+else (Sí)
+  |Usuario|
+  if (¿Selecciona versión específica?\n(HU-13 / RF-010)) then (Sí)
+    :Indicar número de versión;
+    |Sistema|
+    :Cargar VersionContrato seleccionada\n(VersionContrato.consultarVersion);
+  else (No)
+    |Sistema|
+    :Cargar versión vigente\n(Contrato.consultarContrato);
+  endif
+
+  :Generar PDF con contenido del contrato\n(RF-038);
+
+  if (¿Contrato tiene ConstanciaFirma?) then (Sí)
+    :Adjuntar constancias de firma al PDF\n(ConstanciaFirma.consultarConstancia);
+  else (No)
+  endif
+
+  :Entregar archivo PDF al usuario;
+  stop
+endif
+@enduml

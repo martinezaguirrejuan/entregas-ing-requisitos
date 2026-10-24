@@ -1,0 +1,31 @@
+@startuml est_enlace_compartir
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam StateBackgroundColor #ECF0F1
+skinparam StateBorderColor #2C3E50
+skinparam ArrowColor #2C3E50
+
+title Diagrama de Estados — EnlaceCompartir.estado
+
+[*] --> Activo : HU-07 / RF-015:\nPropietario genera enlace\n(EnlaceCompartir.crearEnlace)
+
+Activo --> Revocado : HU-07 / RF-015:\nPropietario revoca el enlace\n(EnlaceCompartir.revocarEnlace)
+
+Activo --> Vencido : Automática (RN-3FN-04):\nfecha_expiracion < NOW()\nVerificado en cada petición
+
+Revocado --> [*]
+Vencido --> [*]
+
+note right of Activo
+  Acceso permitido solo si:
+  estado = 'activo' AND
+  fecha_expiracion > NOW()
+  (RN-005)
+end note
+
+note bottom of Vencido
+  No requiere actor.
+  Transición automática justificada
+  por RN-005 y RN-3FN-04.
+end note
+@enduml

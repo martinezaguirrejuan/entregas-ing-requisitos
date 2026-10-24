@@ -1,0 +1,252 @@
+@startuml paquete_contratos
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam classFontSize 12
+skinparam class {
+  BackgroundColor #F7F9FC
+  BorderColor #34495E
+  ArrowColor #34495E
+}
+skinparam packageStyle rectangle
+hide circle
+title Paquete Contratos
+
+enum ClasificacionContrato {
+  interno
+  externo
+}
+
+enum EstadoContrato {
+  borrador
+  activo
+  firmado
+  vencido
+}
+
+enum EstadoEnlace {
+  activo
+  revocado
+  vencido
+}
+
+enum EstadoFirmaSolicitada {
+  pendiente
+  firmado
+  rechazado
+}
+
+package "Contratos" #EAF7EF {
+
+  class TipoContrato {
+    - idTipoContrato: UUID
+    - nombreTipo: String
+    - descripcion: String
+    - fechaCreacion: DateTime
+    + TipoContrato(nombreTipo: String, descripcion: String)
+    + getIdTipoContrato(): UUID
+    + getNombreTipo(): String
+    + setNombreTipo(nombreTipo: String): void
+    + getDescripcion(): String
+    + setDescripcion(descripcion: String): void
+    + {static} crearTipoContrato(): TipoContrato
+    + {static} consultarTipoContrato(idTipoContrato: UUID): TipoContrato
+    + actualizarTipoContrato(idTipoContrato: UUID, datos: TipoContrato): TipoContrato
+  }
+
+  class Contrato {
+    - idContrato: UUID
+    - titulo: String
+    - clasificacion: ClasificacionContrato
+    - contenido: String
+    - estado: EstadoContrato
+    - /puntajeRiesgo: Integer
+    - fechaCreacion: DateTime
+    - fechaActualizacion: DateTime
+    - fechaInicio: Date
+    - fechaVencimiento: Date
+    + Contrato(titulo: String, tipo: TipoContrato, propietario: Usuario)
+    + getIdContrato(): UUID
+    + getTitulo(): String
+    + setTitulo(titulo: String): void
+    + getContenido(): String
+    + setContenido(contenido: String): void
+    + getEstado(): EstadoContrato
+    + setEstado(estado: EstadoContrato): void
+    + getPuntajeRiesgo(): Integer
+    + getFechaVencimiento(): Date
+    + setFechaVencimiento(fecha: Date): void
+    + generarVersion(): VersionContrato
+    + compartir(fechaExpiracion: DateTime): EnlaceCompartir
+    + marcarFirmado(): void
+    + estaVencido(): Boolean
+    + recalcularPuntajeRiesgo(): Integer
+    + {static} crearContrato(): Contrato
+    + {static} consultarContrato(idContrato: UUID): Contrato
+    + actualizarContrato(idContrato: UUID, datos: Contrato): Contrato
+  }
+
+  ' D18: agrega id_usuario para trazabilidad del autor
+  class VersionContrato {
+    - idVersion: UUID
+    - numeroVersion: Integer
+    - contenido: String
+    - fechaGuardado: DateTime
+    + VersionContrato(numeroVersion: Integer, contenido: String, autor: Usuario)
+    + getIdVersion(): UUID
+    + getNumeroVersion(): Integer
+    + getContenido(): String
+    + getFechaGuardado(): DateTime
+    + {static} crearVersion(): VersionContrato
+    + {static} consultarVersion(idVersion: UUID): VersionContrato
+  }
+
+  ' D10: agrega correo_destino para trazabilidad del destinatario
+  class EnlaceCompartir {
+    - idEnlace: UUID
+    - token: String
+    - estado: EstadoEnlace
+    - correoDestino: String
+    - fechaCreacion: DateTime
+    - fechaExpiracion: DateTime
+    + EnlaceCompartir(contrato: Contrato, fechaExpiracion: DateTime)
+    + getIdEnlace(): UUID
+    + getToken(): String
+    + getEstado(): EstadoEnlace
+    + getCorreoDestino(): String
+    + getFechaExpiracion(): DateTime
+    + revocar(): void
+    + esValido(): Boolean
+    + {static} crearEnlace(): EnlaceCompartir
+    + {static} consultarEnlace(idEnlace: UUID): EnlaceCompartir
+    + actualizarEstado(idEnlace: UUID, estado: EstadoEnlace): EnlaceCompartir
+  }
+
+  ' D10: registra cada acceso al enlace compartido
+  class AccesoEnlace {
+    - idAcceso: UUID
+    - fechaAcceso: DateTime
+    - ipOrigen: String
+    - userAgent: String
+    + AccesoEnlace(enlace: EnlaceCompartir, ipOrigen: String)
+    + getIdAcceso(): UUID
+    + getFechaAcceso(): DateTime
+    + getIpOrigen(): String
+    + getUserAgent(): String
+    + {static} crearAcceso(): AccesoEnlace
+    + {static} consultarAcceso(idAcceso: UUID): AccesoEnlace
+  }
+
+  class Plantilla {
+    - idPlantilla: UUID
+    - nombre: String
+    - contenidoBase: String
+    - activa: Boolean
+    - fechaCreacion: DateTime
+    + Plantilla(nombre: String, tipo: TipoContrato, contenidoBase: String, admin: Usuario)
+    + getIdPlantilla(): UUID
+    + getNombre(): String
+    + setNombre(nombre: String): void
+    + getContenidoBase(): String
+    + setContenidoBase(contenido: String): void
+    + getActiva(): Boolean
+    + {static} crearPlantilla(): Plantilla
+    + {static} consultarPlantilla(idPlantilla: UUID): Plantilla
+    + actualizarPlantilla(idPlantilla: UUID, datos: Plantilla): Plantilla
+    + inactivarPlantilla(idPlantilla: UUID): void
+  }
+
+  ' D07: registra a quienes deben firmar y el estado de cada solicitud
+  class FirmaSolicitada {
+    - idFirmaSolicitada: UUID
+    - orden: Integer
+    - estado: EstadoFirmaSolicitada
+    - fechaSolicitud: DateTime
+    - fechaRespuesta: DateTime
+    + FirmaSolicitada(contrato: Contrato, orden: Integer)
+    + getIdFirmaSolicitada(): UUID
+    + getOrden(): Integer
+    + getEstado(): EstadoFirmaSolicitada
+    + getFechaSolicitud(): DateTime
+    + getFechaRespuesta(): DateTime
+    + {static} crearFirmaSolicitada(): FirmaSolicitada
+    + {static} consultarFirmaSolicitada(idFirmaSolicitada: UUID): FirmaSolicitada
+  }
+}
+
+class Usuario <<externo>> {
+  - idUsuario: UUID
+}
+
+class Firmante <<externo>> {
+  # nombre: String
+  # correo: String
+}
+
+TipoContrato "1" --> "0..*" Contrato : tipifica >
+TipoContrato "1" --> "0..*" Plantilla : categoriza >
+Plantilla "0..1" --> "0..*" Contrato : origina >
+
+' C01: composicion — VersionContrato, EnlaceCompartir y FirmaSolicitada
+' no tienen existencia propia sin el Contrato
+Contrato "1" *-- "0..*" VersionContrato : historial >
+Contrato "1" *-- "0..*" EnlaceCompartir : genera >
+Contrato "1" *-- "0..*" FirmaSolicitada : solicita firmas >
+
+' C01: composicion — AccesoEnlace no existe sin EnlaceCompartir
+EnlaceCompartir "1" *-- "0..*" AccesoEnlace : registra accesos >
+
+Usuario "1" --> "0..*" Contrato : posee >
+Usuario "1" --> "0..*" Plantilla : administra >
+
+' D18: VersionContrato conoce al usuario que la genero
+Usuario "0..1" --> "0..*" VersionContrato : genera >
+
+' D07: FirmaSolicitada referencia a Firmante (Usuario o FirmanteExterno)
+Firmante "0..1" --> "0..*" FirmaSolicitada : debe firmar >
+
+Contrato ..> ClasificacionContrato
+Contrato ..> EstadoContrato
+EnlaceCompartir ..> EstadoEnlace
+FirmaSolicitada ..> EstadoFirmaSolicitada
+
+note right of VersionContrato
+  {unique(contrato, numeroVersion)} (C09)
+  Garantiza numero correlativo unico
+  dentro de cada contrato.
+end note
+
+note right of EnlaceCompartir
+  esValido(): estado='activo' AND
+  fechaExpiracion > NOW() (RN-04).
+  correoDestino traza a quien se envio (D10).
+end note
+
+note right of FirmaSolicitada
+  marcarFirmado() en Contrato verifica que
+  todos los FirmaSolicitada tengan estado
+  = firmado antes de cambiar el estado
+  del contrato (RN-03).
+  UNIQUE(id_contrato, orden): no puede haber
+  dos solicitudes en la misma posicion.
+  UNIQUE(id_contrato, id_usuario) e
+  UNIQUE(id_contrato, id_firmante): el mismo
+  firmante no puede ser solicitado dos veces
+  para el mismo contrato.
+end note
+
+note right of Plantilla
+  RN-08: id_admin debe tener rol='administrador'.
+  Se valida en un unico punto: trigger
+  BEFORE INSERT/UPDATE en Plantilla, o
+  metodo Plantilla.crearPlantilla().
+  No repetir la validacion en controladores.
+end note
+
+note right of Contrato
+  C07: operaciones de negocio agregadas:
+  generarVersion(), compartir(),
+  marcarFirmado(), estaVencido(),
+  recalcularPuntajeRiesgo().
+end note
+
+@enduml

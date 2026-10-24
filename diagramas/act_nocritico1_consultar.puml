@@ -1,0 +1,44 @@
+@startuml act_nocritico1_consultar
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam ArrowColor #2C3E50
+skinparam ActivityBorderColor #2C3E50
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam swimlaneBorderColor #7F8C8D
+skinparam swimlaneBackgroundColor #FDFEFE
+
+title Diagrama de Actividades — Proceso NO CRÍTICO 1\nHU-03: Consultar repositorio de contratos
+
+|Usuario|
+start
+:Acceder a "Mis Contratos";
+
+|Sistema|
+if (¿Sesión activa? (RN-001)) then (No)
+  :Redirigir al formulario\nde inicio de sesión;
+  stop
+else (Sí)
+  :Cargar contratos del usuario\n(Contrato.consultarContrato, RF-008)\nordenados por fecha descendente;
+
+  |Usuario|
+  if (¿Aplica filtros?) then (Sí)
+    :Seleccionar criterios:\nestado / tipo / fecha;
+    |Sistema|
+    :Filtrar contratos por criterios\n(RF-009);
+  else (No)
+    |Sistema|
+    :Mostrar todos los contratos;
+  endif
+
+  :Mostrar lista con:\ntítulo, estado, tipo, fecha;
+
+  |Usuario|
+  if (¿Selecciona un contrato?) then (Sí)
+    |Sistema|
+    :Mostrar detalle del contrato\n(Contrato.consultarContrato);
+  else (No)
+  endif
+
+  stop
+endif
+@enduml

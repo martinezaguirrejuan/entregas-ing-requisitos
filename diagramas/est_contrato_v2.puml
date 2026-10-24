@@ -1,0 +1,36 @@
+@startuml est_contrato_v2
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam StateBackgroundColor #ECF0F1
+skinparam StateBorderColor #2C3E50
+skinparam ArrowColor #2C3E50
+
+title Diagrama de Estados — Contrato.estado
+
+[*] --> Borrador : HU-01 / RF-004:\nUsuario genera contrato\n(Contrato.crearContrato)
+
+Borrador --> Borrador : HU-09 / RF-006, RF-007:\nUsuario edita con IA\n(Contrato.actualizarContrato\n+ VersionContrato.crearVersion)
+
+Borrador --> Activo : HU-03 / RF-008:\nUsuario activa el contrato\n(Contrato.activarContrato)
+
+Activo --> Firmado : Automática (RN-3FN-03):\nTodos FirmaSolicitada.estado = firmado\nControlador actualiza Contrato.estado
+
+Activo --> Vencido : Automática (RN-3FN-05):\ncron: fecha_vencimiento < NOW()
+
+Borrador --> Vencido : Automática (RN-3FN-05):\ncron: fecha_vencimiento < NOW()
+
+Firmado --> [*]
+Vencido --> [*]
+
+note right of Borrador
+  Editable con IA (HU-09)
+  Descargable en PDF (HU-10)
+  Compartible por enlace (HU-07)
+end note
+
+note right of Firmado
+  FK ON DELETE RESTRICT:
+  no eliminable si tiene
+  ConstanciaFirma (RN-003, RN-013)
+end note
+@enduml
